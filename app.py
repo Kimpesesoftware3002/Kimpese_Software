@@ -154,7 +154,8 @@ if st.session_state.step == "saisie":
                             (st.session_state.nom_marque, f"contact@{st.session_state.nom_marque.lower().replace(' ', '')}.com", datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
                 conn.commit()
                 conn.close()
-            except: pass
+            except: 
+                pass
             st.session_state.step = "verrouille"
             st.rerun()
 
@@ -209,4 +210,3 @@ elif st.session_state.step == "verrouille":
                 try:
                     conn = sqlite3.connect(DB_NAME)
                     cur = conn.cursor()
-
