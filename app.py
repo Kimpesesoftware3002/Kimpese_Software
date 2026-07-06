@@ -6,6 +6,7 @@ import streamlit as st
 import sqlite3
 import os
 import requests
+import pandas as pd
 from datetime import datetime
 
 DB_NAME = "database.db"
@@ -205,7 +206,7 @@ elif st.session_state.step == "verrouille":
         email_beta = st.text_input("Enter your business email to request priority access credentials :", placeholder="ceo@yourbrand.com")
         if st.button("Submit Request", type="primary"):
             if email_beta.strip():
-                st.success("✅ Request saved! Our deployment team will email your secure credentials within 24 hours.")
-                st.session_state.choix_plan = None
-
-st.write("---")
+                # Enregistrement propre en DB avec le plan choisi
+                try:
+                    conn = sqlite3.connect(DB_NAME)
+                    cur = conn.cursor()
