@@ -20,8 +20,13 @@ st.markdown("""
         color: #F3F4F6 !important;
     }
     .logo-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
         text-align: center;
-        padding: 20px 0;
+        padding: 30px 0;
+        width: 100%;
     }
     .brand-title {
         font-size: 42px;
@@ -74,20 +79,22 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# --- AFFICHAGE DU LOGO ---
-st.markdown('<div class="logo-container">', unsafe_allow_html=True)
+# --- EN-TÊTE DE PAGE : LOGO FORCE AU CENTRE ---
 if os.path.exists("logo.png"):
-    st.image("logo.png", width=200)
+    # Utilisation des colonnes Streamlit pour forcer un centrage parfait de l'image
+    col_logo1, col_logo2, col_logo3 = st.columns([1, 1, 1])
+    with col_logo2:
+        st.image("logo.png", use_container_width=True)
 else:
-    st.markdown('<div class="brand-title">KIMPESE</div><div class="brand-subtitle">SOFTWARE</div>', unsafe_allow_html=True)
-st.markdown('</div>', unsafe_allow_html=True)
-st.markdown('<p style="text-align:center; color:#9CA3AF; font-size:16px; margin-top:-10px; margin-bottom:30px;">Next-Gen Pricing Intelligence for Global Brands</p>', unsafe_allow_html=True)
+    st.markdown('<div class="logo-container"><div class="brand-title">KIMPESE</div><div class="brand-subtitle">SOFTWARE</div></div>', unsafe_allow_html=True)
+
+st.markdown('<p style="text-align:center; color:#9CA3AF; font-size:16px; margin-top:15px; margin-bottom:30px;">Next-Gen Pricing Intelligence for Global Brands</p>', unsafe_allow_html=True)
 
 # Détection pays via URL
 query_params = st.query_params
 client_country = query_params["country"].upper() if "country" in query_params else "US"
 
-# 📊 MATRICE CORRIGÉE AVEC VOS TARIFS PREMIUM US
+# 📊 CONFIGURATION REELLE METRIC DE VOS TARIFS PREMIUM 
 MATRICE_TARIFS = {
     "US": {"devise": "$", "starter": "99", "pro": "249", "enterprise": "499"},
     "UK": {"devise": "£", "starter": "79", "pro": "199", "enterprise": "399"},
@@ -106,7 +113,7 @@ if "step" not in st.session_state:
 
 st.write("---")
 
-# --- INTERFACE ---
+# --- ENGINE ---
 if st.session_state.step == "saisie":
     st.markdown(f"### 🌐 Market Analysis Engine • Country: {client_country}")
     categorie = st.radio("Select your industry vertical :", ["Pet Care / Animalier 🐶", "Pharmacy / Parapharmacie 💊"], horizontal=True)
