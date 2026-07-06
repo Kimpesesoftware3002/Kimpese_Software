@@ -4,7 +4,6 @@
 # ==============================================================================
 import streamlit as st
 import os
-import requests
 from datetime import datetime
 
 # Configuration globale de la page
@@ -13,10 +12,13 @@ st.set_page_config(page_title="Kimpese Software | Global Pricing Intelligence", 
 # --- DESIGN SILICON VALLEY NOIR ET VERT ---
 st.markdown("""
 <style>
+    /* Fond noir profond universel */
     .stApp {
         background-color: #0A0E17 !important;
         color: #F3F4F6 !important;
     }
+    
+    /* Cartes de tarifs Silicon Valley */
     .sv-card {
         background: #111827 !important;
         border: 1px solid rgba(46, 204, 113, 0.2);
@@ -44,7 +46,10 @@ st.markdown("""
         text-transform: uppercase;
         letter-spacing: 1px;
     }
+    
     label, p, h3, span { color: #E5E7EB !important; }
+    
+    /* Zones de saisie noires */
     div[data-baseweb="input"], div[data-baseweb="base-input"], .stTextInput>div {
         background-color: #111827 !important;  
         border: 1px solid #374151 !important;  
@@ -54,8 +59,11 @@ st.markdown("""
         color: #FFFFFF !important;
         background-color: #111827 !important;
     }
+    
+    /* Éradication absolue de tous les blocs et lignes blanches résiduelles de Streamlit */
     div[data-testid="stVerticalBlock"] > div {
         background-color: transparent !important;
+        background: transparent !important;
         border: none !important;
         box-shadow: none !important;
     }
@@ -65,29 +73,39 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# --- BLOC MÉTÉO AUTOMATIQUE ---
-try:
-    geo_req = requests.get("http://ip-api.com", timeout=3)
-    if geo_req.status_code == 200:
-        geo_data = geo_req.json()
-        ville_visiteur = geo_data.get("city", "Silicon Valley")
-        region_visiteur = geo_data.get("region", "CA")
-    else:
-        ville_visiteur, region_visiteur = "Myrtle Beach", "SC"
-except:
-    ville_visiteur, region_visiteur = "Myrtle Beach", "SC"
+# --- COMPOSANT METEO CLIENT GEOLOCALISE (JAVASCRIPT) ---
+# Ce composant s'exécute sur le navigateur du visiteur pour afficher sa vraie météo locale
+html_meteo_client = """
+<div style="position: absolute; top: -50px; right: 10px; z-index: 9999;">
+    <div id="weather-display" style="background: rgba(17, 24, 39, 0.9); border: 1px solid rgba(46, 204, 113, 0.2); padding: 10px 18px; border-radius: 12px; text-align: right; min-width: 150px; font-family: monospace;">
+        <div style="font-size: 16px; font-weight: 700; color: #2ECC71;" id="wf-temp">⏳ Loading...</div>
+        <div style="font-size: 11px; color: #9CA3AF; text-transform: uppercase;" id="wf-loc">Local Weather</div>
+    </div>
+</div>
 
-try:
-    weather_req = requests.get(f"https://wttr.in{ville_visiteur}?format=%c+%t", timeout=3)
-    if weather_req.status_code == 200 and "Error" not in weather_req.text:
-        conditions_visiteur = weather_req.text.strip()
-    else:
-        conditions_visiteur = "☀️ 84°F"
-except:
-    conditions_visiteur = "☀️ 84°F"
-
-html_meteo_propre = "<div style='position: absolute; top: -50px; right: 10px; z-index: 9999;'><div style='background: rgba(17, 24, 39, 0.9); border: 1px solid rgba(46, 204, 113, 0.2); padding: 10px 18px; border-radius: 12px; text-align: right;'><div style='font-size: 16px; font-weight: 700; color: #2ECC71;'> " + conditions_visiteur + "</div><div style='font-size: 11px; color: #9CA3AF; text-transform: uppercase;'> " + ville_visiteur + ", " + region_visiteur + "</div></div></div>"
-st.markdown(html_meteo_propre, unsafe_allow_html=True)
+<script>
+    // Récupération de la météo basée sur la vraie IP publique du visiteur
+    fetch('https://wttr.in')
+        .then(response => response.json())
+        .then(data => {
+            const current = data.current_condition[0];
+            const area = data.nearest_area[0];
+            const tempF = current.temp_F;
+            const desc = current.weatherDesc[0].value;
+            const city = area.areaName[0].value;
+            const region = area.region[0].value;
+            
+            document.getElementById('wf-temp').innerText = "☀️ " + tempF + "°F";
+            document.getElementById('wf-loc').innerText = city + ", " + region;
+        })
+        .catch(err => {
+            // Affichage de secours par défaut en cas de blocage des scripts
+            document.getElementById('wf-temp').innerText = "☀️ 84°F";
+            document.getElementById('wf-loc').innerText = "Myrtle Beach, SC";
+        });
+</script>
+"""
+st.markdown(html_meteo_client, unsafe_allow_html=True)
 
 # --- EN-TÊTE DE PAGE : LOGO CENTRÉ ---
 st.write("")
@@ -185,7 +203,6 @@ elif st.session_state.step == "verrouille":
         email_beta = st.text_input("Enter your business email to request priority access credentials :", placeholder="ceo@yourbrand.com")
         if st.button("Submit Request", type="primary"):
             if email_beta.strip():
-                # Sauvegarde en mémoire instantanée
                 nouvelle_entree = {
                     "Date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                     "Brand": st.session_state.nom_marque,
@@ -193,16 +210,3 @@ elif st.session_state.step == "verrouille":
                     "Plan": st.session_state.choix_plan,
                     "Email": email_beta.strip()
                 }
-                st.session_state.liste_emails.append(nouvelle_entree)
-                st.success("✅ Request saved! Our deployment team will email your secure credentials within 24 hours.")
-                st.session_state.choix_plan = None
-
-# --- PANEL ADMINISTRATEUR INTERNE NETTOYÉ ---
-st.write("---")
-with st.expander("🛠️ Internal Database Viewer (Admin Only)"):
-    st.write("### 👥 Captured Prospect Leads")
-    if st.session_state.liste_emails:
-        import pandas as pd
-        df_leads = pd.DataFrame(st.session_state.liste_emails)
-        st.dataframe(df_leads, use_container_width=True)
-        csv = df_leads.to_csv(index=False).encode('utf-8')
