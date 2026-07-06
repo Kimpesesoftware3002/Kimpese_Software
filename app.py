@@ -12,7 +12,7 @@ DB_NAME = "database.db"
 # Configuration de la page
 st.set_page_config(page_title="Kimpese Software | Global Pricing Intelligence", page_icon="🟢", layout="wide")
 
-# --- DESIGN SILICON VALLEY NOIR ET VERT (ZONE DE TEXTE NOIRE FORCEE) ---
+# --- DESIGN SILICON VALLEY NOIR ET VERT ---
 st.markdown("""
 <style>
     /* Fond noir profond général */
@@ -21,14 +21,14 @@ st.markdown("""
         color: #F3F4F6 !important;
     }
     
-    /* Centrage et structure de l'en-tête */
+    /* Centrage de l'en-tête */
     .logo-container {
         display: flex;
         justify-content: center;
         align-items: center;
         flex-direction: column;
         text-align: center;
-        padding: 30px 0;
+        padding: 20px 0;
         width: 100%;
     }
     .brand-title {
@@ -82,25 +82,29 @@ st.markdown("""
     /* Labels globaux */
     label, p, h3 { color: #E5E7EB !important; }
     
-    /* 🚨 SÉCURISATION DU FOND NOIR POUR LA ZONE DE CLIC (INPUT) 🚨 */
-    div[data-baseweb="input"] {
-        background-color: #111827 !important;  /* Fond noir anthracite */
-        border: 1px solid #374151 !important;  /* Bordure grise tech */
+    /* Intégration sombre absolue pour toutes les zones de texte restantes */
+    div[data-baseweb="input"], div[data-baseweb="base-input"], .stTextInput>div {
+        background-color: #111827 !important;  
+        border: 1px solid #374151 !important;  
         border-radius: 8px !important;
     }
-    
-    /* Force la couleur du texte tapé par l'utilisateur à rester blanche */
-    div[data-baseweb="input"] input {
+    div[data-baseweb="input"] input, div[data-baseweb="base-input"] input, .stTextInput input {
         color: #FFFFFF !important;
         background-color: #111827 !important;
+    }
+    
+    /* Nettoyage des blocs d'espacement vides de Streamlit */
+    div[data-testid="stVerticalBlock"] > div[style*="flex-direction: column"] > div {
+        background: transparent !important;
     }
 </style>
 """, unsafe_allow_html=True)
 
-# --- EN-TÊTE DE PAGE : LOGO CENTRÉ ---
+# --- EN-TÊTE DE PAGE : LOGO CENTRÉ ET RÉDUIT DE MOITIÉ ---
 if os.path.exists("logo.png"):
-    col_logo1, col_logo2, col_logo3 = st.columns([1, 2, 1])
-    with col_logo2:
+    # Utilisation d'un découpage en 5 colonnes pour pincer l'image au milieu et la réduire de moitié
+    col_l1, col_l2, col_l3, col_l4, col_l5 = st.columns([1.5, 1, 1.2, 1, 1.5])
+    with col_l3:
         st.image("logo.png", use_container_width=True)
 else:
     st.markdown('<div class="logo-container"><div class="brand-title">KIMPESE</div><div class="brand-subtitle">SOFTWARE</div></div>', unsafe_allow_html=True)
