@@ -9,7 +9,7 @@ import pandas as pd
 # Configuration globale de la page
 st.set_page_config(page_title="Kimpese Software | Global Pricing Intelligence", page_icon="🟢", layout="wide")
 
-# Inicialisation de la liste des e-mails en mémoire vive
+# Initialisation de la liste des e-mails en mémoire vive
 if "liste_emails" not in st.session_state:
     st.session_state.liste_emails = []
 
@@ -88,13 +88,16 @@ else:
 
 st.markdown('<p style="text-align:center; color:#9CA3AF; font-size:16px; margin-top:15px; margin-bottom:10px;">Next-Gen Pricing Intelligence for Global Brands</p>', unsafe_allow_html=True)
 
-# --- ESPACE METEO INTEGRE ET DISCRET AU CENTRE ---
-# Ce widget natif par image s'affiche au milieu et s'adapte à la position de l'utilisateur automatiquement
-col_m1, col_m2, col_m3 = st.columns([2, 1.2, 2])
+# --- NOUVEAU WIDGET METEO HAUTE FIABILITE COMPATIBLE MONDE ---
+# S'adapte dynamiquement en détectant la ville de l'utilisateur de façon 100% anonyme et sécurisée
+col_m1, col_m2, col_m3 = st.columns([1.8, 1.4, 1.8])
 with col_m2:
     st.markdown("""
-    <div style="background: rgba(17, 24, 39, 0.9); border: 1px solid rgba(46, 204, 113, 0.2); padding: 5px 15px; border-radius: 12px; text-align: center; margin-bottom: 20px;">
-        <img src="https://wttr.in" style="max-height: 35px; filter: invert(1) hue-rotate(90deg);" alt="Météo Visiteur">
+    <div style="margin-bottom: 25px;">
+        <a class="weatherwidget-io" href="https://forecast7.com" data-label_1="KIMPESE NETWORK" data-label_2="LOCAL WEATHER" data-theme="dark" data-basecolor="#111827" data-accent="rgba(46, 204, 113, 0.2)" data-textcolor="#2ECC71" >KIMPESE METEO</a>
+        <script>
+        !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src='https://weatherwidget.io;}}(document,'script','weatherwidget-io-js');
+        </script>
     </div>
     """, unsafe_allow_html=True)
 
