@@ -1,3 +1,7 @@
+#  PROPRIETARY NOTICE & COPYRIGHT LICENSE
+#  Copyright © 2026 KIMPESE SOFTWARE L.L.C. All rights reserved.
+#  State of Registration: Wyoming, USA.
+# ==============================================================================
 import streamlit as st
 import sqlite3
 import os
@@ -16,32 +20,6 @@ st.markdown("""
     .stApp {
         background-color: #0A0E17 !important;
         color: #F3F4F6 !important;
-    }
-    
-    /* Widget Météo en haut à droite (Sécurisé) */
-    .weather-box {
-        position: absolute;
-        top: -10px;
-        right: 10px;
-        background: rgba(17, 24, 39, 0.9) !important;
-        border: 1px solid rgba(46, 204, 113, 0.2);
-        padding: 10px 18px;
-        border-radius: 12px;
-        text-align: right;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-        font-family: monospace;
-        z-index: 999;
-    }
-    .weather-temp {
-        font-size: 16px;
-        font-weight: 700;
-        color: #2ECC71;
-    }
-    .weather-loc {
-        font-size: 11px;
-        color: #9CA3AF;
-        text-transform: uppercase;
-        letter-spacing: 1px;
     }
     
     /* Cartes de tarifs Silicon Valley */
@@ -92,7 +70,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# --- BLOC MÉTÉO SÉCURISÉ ISOLE SANS BUG D'ACCOLADES ---
+# --- BLOC MÉTÉO SÉCURISÉ ---
 try:
     geo_req = requests.get("http://ip-api.com", timeout=3)
     if geo_req.status_code == 200:
@@ -109,12 +87,11 @@ try:
     if weather_req.status_code == 200 and "Error" not in weather_req.text:
         conditions_visiteur = weather_req.text.strip()
     else:
-        conditions_visiteur = "☀️ 83°F"
+        conditions_visiteur = "☀️ 84°F"
 except:
-    conditions_visiteur = "☀️ 83°F"
+    conditions_visiteur = "☀️ 84°F"
 
-# Injection finale via concaténation propre (évite les conflits CSS)
-html_meteo_propre = "<div class='weather-box'><div class='weather-temp'>" + conditions_visiteur + "</div><div class='weather-loc'>" + ville_visiteur + ", " + region_visiteur + "</div></div>"
+html_meteo_propre = "<div style='position: absolute; top: -50px; right: 10px; z-index: 9999;'><div style='background: rgba(17, 24, 39, 0.9); border: 1px solid rgba(46, 204, 113, 0.2); padding: 10px 18px; border-radius: 12px; text-align: right;'><div style='font-size: 16px; font-weight: 700; color: #2ECC71;'>" + conditions_visiteur + "</div><div style='font-size: 11px; color: #9CA3AF; text-transform: uppercase;'>" + ville_visiteur + ", " + region_visiteur + "</div></div></div>"
 st.markdown(html_meteo_propre, unsafe_allow_html=True)
 
 # --- EN-TÊTE DE PAGE : LOGO CENTRÉ ---
@@ -132,7 +109,7 @@ st.markdown('<p style="text-align:center; color:#9CA3AF; font-size:16px; margin-
 query_params = st.query_params
 client_country = query_params["country"].upper() if "country" in query_params else "US"
 
-# Vrais Tarifs mis à jour ($99 / $249 / $499)
+# Tarifs Premium ($99 / $249 / $499) [04/07 08:37]
 MATRICE_TARIFS = {
     "US": {"devise": "$", "starter": "99", "pro": "249", "enterprise": "499"},
     "UK": {"devise": "£", "starter": "79", "pro": "199", "enterprise": "399"},
@@ -146,8 +123,8 @@ if client_country not in MATRICE_TARIFS:
 config = MATRICE_TARIFS[client_country]
 devise = config["devise"]
 
-if "step" not in st.session_state:
-    st.session_state.step = "saisie"
+if "step" not in st.session_state: st.session_state.step = "saisie"
+if "choix_plan" not in st.session_state: st.session_state.choix_plan = None
 
 st.write("---")
 
@@ -187,7 +164,8 @@ elif st.session_state.step == "verrouille":
             <p style="color:#9CA3AF; font-size:14px; line-height:1.6;">Track 50 active products<br>Daily price updates<br>Single country analytics</p>
         </div>
         """, unsafe_allow_html=True)
-        st.button("Launch Starter Trial", key="btn_str", use_container_width=True)
+        if st.button("Launch Starter Trial", key="btn_str", use_container_width=True):
+            st.session_state.choix_plan = "Starter"
         
     with col2:
         st.markdown(f"""
@@ -198,7 +176,8 @@ elif st.session_state.step == "verrouille":
             <p style="color:#9CA3AF; font-size:14px; line-height:1.6;">Track 500 active products<br>Instant stock & price alerts<br>Multi-country tracking</p>
         </div>
         """, unsafe_allow_html=True)
-        st.button("Launch Pro Trial", key="btn_pro", use_container_width=True)
+        if st.button("Launch Pro Trial", key="btn_pro", use_container_width=True):
+            st.session_state.choix_plan = "Pro"
         
     with col3:
         st.markdown(f"""
@@ -208,7 +187,18 @@ elif st.session_state.step == "verrouille":
             <p style="color:#9CA3AF; font-size:14px; line-height:1.6;">Unlimited products & stores<br>Custom API access<br>Dedicated Account Manager</p>
         </div>
         """, unsafe_allow_html=True)
-        st.button("Contact Sales", key="btn_ent", use_container_width=True)
+        if st.button("Contact Sales", key="btn_ent", use_container_width=True):
+            st.session_state.choix_plan = "Enterprise"
+
+    # --- ZONE FORMULAIRE BETA COLLECTE EMAIL ---
+    if st.session_state.choix_plan:
+        st.write("---")
+        st.info(f"🚀 **Kimpese Software is currently in Private Beta for the {st.session_state.choix_plan} Plan.**")
+        email_beta = st.text_input("Enter your business email to request priority access credentials :", placeholder="ceo@yourbrand.com")
+        if st.button("Submit Request", type="primary"):
+            if email_beta.strip():
+                st.success("✅ Request saved! Our deployment team will email your secure credentials within 24 hours.")
+                st.session_state.choix_plan = None
 
 st.write("---")
 st.markdown("<p style='color:#4B5563; font-size:12px; text-align:center;'>© 2026 KIMPESE SOFTWARE L.L.C. All rights reserved. Secured under Wyoming, USA LLC Proprietary Laws.</p>", unsafe_allow_html=True)
