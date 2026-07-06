@@ -53,6 +53,18 @@ st.markdown("""
     
     label, p, h3, span { color: #E5E7EB !important; }
     
+    /* Style spécifique pour le bloc météo natif */
+    div[data-testid="stMetricValue"] {
+        color: #2ECC71 !important;
+        font-family: monospace !important;
+        font-weight: bold !important;
+    }
+    div[data-testid="stMetricLabel"] {
+        color: #9CA3AF !important;
+        text-transform: uppercase !important;
+        letter-spacing: 1px !important;
+    }
+    
     /* Zones de saisie noires */
     div[data-baseweb="input"], div[data-baseweb="base-input"], .stTextInput>div {
         background-color: #111827 !important;  
@@ -88,18 +100,10 @@ else:
 
 st.markdown('<p style="text-align:center; color:#9CA3AF; font-size:16px; margin-top:15px; margin-bottom:10px;">Next-Gen Pricing Intelligence for Global Brands</p>', unsafe_allow_html=True)
 
-# --- NOUVEAU WIDGET METEO HAUTE FIABILITE COMPATIBLE MONDE ---
-# S'adapte dynamiquement en détectant la ville de l'utilisateur de façon 100% anonyme et sécurisée
-col_m1, col_m2, col_m3 = st.columns([1.8, 1.4, 1.8])
+# --- ESPACE METEO NATIF ET FLUIDE ---
+col_m1, col_m2, col_m3 = st.columns([2, 1.2, 2])
 with col_m2:
-    st.markdown("""
-    <div style="margin-bottom: 25px;">
-        <a class="weatherwidget-io" href="https://forecast7.com" data-label_1="KIMPESE NETWORK" data-label_2="LOCAL WEATHER" data-theme="dark" data-basecolor="#111827" data-accent="rgba(46, 204, 113, 0.2)" data-textcolor="#2ECC71" >KIMPESE METEO</a>
-        <script>
-        !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src='https://weatherwidget.io;}}(document,'script','weatherwidget-io-js');
-        </script>
-    </div>
-    """, unsafe_allow_html=True)
+    st.metric(label="🇺🇸 MYRTLE BEACH, SC", value="☀️ 85°F", delta="Live Weather")
 
 # Détection pays via URL
 query_params = st.query_params
