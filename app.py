@@ -4,7 +4,6 @@
 # ==============================================================================
 import streamlit as st
 import os
-from datetime import datetime
 
 # Configuration globale de la page
 st.set_page_config(page_title="Kimpese Software | Global Pricing Intelligence", page_icon="🟢", layout="wide")
@@ -205,9 +204,7 @@ elif st.session_state.step == "verrouille":
         email_beta = st.text_input("Enter your business email to request priority access credentials :", placeholder="ceo@yourbrand.com")
         if st.button("Submit Request", type="primary"):
             if email_beta.strip():
-                nouvelle_entree = {
-                    "Date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                    "Brand": st.session_state.nom_marque,
-                    "Vertical": st.session_state.vertical,
-                    "Plan": st.session_state.choix_plan,
-                    "Email": email_beta.strip()
+                # Écritures simplifiées sans accolades pour éviter les bugs
+                st.session_state.liste_emails.append(email_beta.strip())
+                st.success("✅ Request saved! Our deployment team will email your secure credentials within 24 hours.")
+                st.session_state.choix_plan = None
