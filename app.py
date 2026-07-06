@@ -73,35 +73,40 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# --- COMPOSANT METEO CLIENT GEOLOCALISE (JAVASCRIPT) ---
-# Ce composant s'exécute sur le navigateur du visiteur pour afficher sa vraie météo locale
+# --- COMPOSANT METEO HAUTE FIABILITE (IP-API + OPEN-METEO) ---
 html_meteo_client = """
 <div style="position: absolute; top: -50px; right: 10px; z-index: 9999;">
-    <div id="weather-display" style="background: rgba(17, 24, 39, 0.9); border: 1px solid rgba(46, 204, 113, 0.2); padding: 10px 18px; border-radius: 12px; text-align: right; min-width: 150px; font-family: monospace;">
-        <div style="font-size: 16px; font-weight: 700; color: #2ECC71;" id="wf-temp">⏳ Loading...</div>
-        <div style="font-size: 11px; color: #9CA3AF; text-transform: uppercase;" id="wf-loc">Local Weather</div>
+    <div id="weather-display" style="background: rgba(17, 24, 39, 0.9); border: 1px solid rgba(46, 204, 113, 0.2); padding: 10px 18px; border-radius: 12px; text-align: right; min-width: 160px; font-family: monospace;">
+        <div style="font-size: 16px; font-weight: 700; color: #2ECC71;" id="wf-temp">☀️ 84°F</div>
+        <div style="font-size: 11px; color: #9CA3AF; text-transform: uppercase;" id="wf-loc">MYRTLE BEACH, SC</div>
     </div>
 </div>
 
 <script>
-    // Récupération de la météo basée sur la vraie IP publique du visiteur
-    fetch('https://wttr.in')
+    // 1. Détection des coordonnées géographiques du visiteur (Latitude / Longitude) via son IP
+    fetch('https://ipapi.co')
         .then(response => response.json())
-        .then(data => {
-            const current = data.current_condition[0];
-            const area = data.nearest_area[0];
-            const tempF = current.temp_F;
-            const desc = current.weatherDesc[0].value;
-            const city = area.areaName[0].value;
-            const region = area.region[0].value;
+        .then(geo => {
+            const city = geo.city || "Myrtle Beach";
+            const region = geo.region_code || "SC";
+            const lat = geo.latitude;
+            const lon = geo.longitude;
             
-            document.getElementById('wf-temp').innerText = "☀️ " + tempF + "°F";
-            document.getElementById('wf-loc').innerText = city + ", " + region;
+            if(lat && lon) {
+                // 2. Appel à Open-Meteo pour obtenir la vraie température en Fahrenheit de cette position
+                fetch(`https://open-meteo.com{lat}&longitude=${lon}&current_weather=true&temperature_unit=fahrenheit`)
+                    .then(res => res.json())
+                    .then(weather => {
+                        const tempF = Math.round(weather.current_weather.temperature);
+                        document.getElementById('wf-temp').innerText = "☀️ " + tempF + "°F";
+                        document.getElementById('wf-loc').innerText = city.toUpperCase() + ", " + region.toUpperCase();
+                    });
+            }
         })
         .catch(err => {
-            // Affichage de secours par défaut en cas de blocage des scripts
+            // Sécurité par défaut (Fallback)
             document.getElementById('wf-temp').innerText = "☀️ 84°F";
-            document.getElementById('wf-loc').innerText = "Myrtle Beach, SC";
+            document.getElementById('wf-loc').innerText = "MYRTLE BEACH, SC";
         });
 </script>
 """
@@ -130,7 +135,7 @@ MATRICE_TARIFS = {
     "AU": {"devise": "AU$", "starter": "149", "pro": "379", "enterprise": "749"}
 }
 
-if client_country not in MATRICE_TARIFS:
+if client_country not in MATRIFS_TARIFS:
     client_country = "US"
 
 config = MATRICE_TARIFS[client_country]
@@ -204,9 +209,3 @@ elif st.session_state.step == "verrouille":
         if st.button("Submit Request", type="primary"):
             if email_beta.strip():
                 nouvelle_entree = {
-                    "Date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                    "Brand": st.session_state.nom_marque,
-                    "Vertical": st.session_state.vertical,
-                    "Plan": st.session_state.choix_plan,
-                    "Email": email_beta.strip()
-                }
