@@ -5,7 +5,6 @@
 import streamlit as st
 import sqlite3
 import os
-import requests
 from datetime import datetime
 
 DB_NAME = "database.db"
@@ -13,83 +12,32 @@ DB_NAME = "database.db"
 # Configuration globale de la page
 st.set_page_config(page_title="Kimpese Software | Global Pricing Intelligence", page_icon="🟢", layout="wide")
 
-# --- FONCTION DE GÉOLOCALISATION ET MÉTÉO EN DIRECT ---
-def obtenir_meteo_visiteur():
-    try:
-        # 1. Détection de la ville du visiteur via son adresse IP publique
-        geo_req = requests.get("http://ip-api.com", timeout=3)
-        if geo_req.status_type == 200:
-            geo_data = geo_req.json()
-            ville = geo_data.get("city", "Silicon Valley")
-            region = geo_data.get("region", "CA")
-            
-            # 2. Récupération de la météo en temps réel pour cette ville (wttr.in)
-            # format "%c+%t" donne l'émoji météo + la température (ex: ☀️+83°F)
-            # US/UK/CA/AU utilisent généralement le Fahrenheit ou Celsius selon la zone
-            weather_req = requests.get(f"https://wttr.in{ville}?format=%c+%t", timeout=3)
-            if weather_req.status_type == 200 and "Error" not in weather_req.text:
-                info_meteo = weather_req.text.strip()
-                return f"{info_meteo}", f"{ville}, {region}"
-    except:
-        pass
-    # Valeur de secours élégante (Fallback) en cas de coupure API
-    return "☀️ 83°F", "Myrtle Beach, SC"
-
-conditions, localisation = obtenir_meteo_visiteur()
-
-# --- DESIGN SILICON VALLEY AVEC CHASSIS DYNAMIQUE ---
-st.markdown(f"""
+# --- DESIGN SILICON VALLEY NOIR ET VERT ---
+st.markdown("""
 <style>
-    /* Fond noir profond général */
-    .stApp {{
+    /* Fond noir profond universel */
+    .stApp {
         background-color: #0A0E17 !important;
         color: #F3F4F6 !important;
     }
     
-    /* Widget Météo en haut à droite dynamique */
-    .weather-box {{
-        position: absolute;
-        top: -10px;
-        right: 10px;
-        background: rgba(17, 24, 39, 0.6);
-        border: 1px solid rgba(46, 204, 113, 0.2);
-        padding: 10px 18px;
-        border-radius: 12px;
-        text-align: right;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-        font-family: monospace;
-        z-index: 999;
-    }}
-    .weather-temp {{
-        font-size: 16px;
-        font-weight: 700;
-        color: #2ECC71;
-    }}
-    .weather-loc {{
-        font-size: 11px;
-        color: #9CA3AF;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-    }}
-    
-    /* Cartes de tarifs Tech */
-    .sv-card {{
-        background: rgba(17, 24, 39, 0.8);
+    /* Cartes de tarifs Silicon Valley */
+    .sv-card {
+        background: #111827 !important;
         border: 1px solid rgba(46, 204, 113, 0.2);
         border-radius: 16px;
         padding: 35px;
         text-align: center;
         box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
-        backdrop-filter: blur(12px);
         transition: all 0.3s ease;
         margin-bottom: 15px;
-    }}
-    .sv-card:hover {{
+    }
+    .sv-card:hover {
         border-color: #2ECC71;
         box-shadow: 0 0 25px rgba(46, 204, 113, 0.3);
         transform: translateY(-5px);
-    }}
-    .sv-badge {{
+    }
+    .sv-badge {
         background: linear-gradient(90deg, #2ECC71, #27AE60);
         color: white;
         padding: 5px 14px;
@@ -100,29 +48,28 @@ st.markdown(f"""
         margin-bottom: 20px;
         text-transform: uppercase;
         letter-spacing: 1px;
-    }}
+    }
     
-    label, p, h3 {{ color: #E5E7EB !important; }}
+    label, p, h3, span { color: #E5E7EB !important; }
     
-    /* Champs de saisie noirs */
-    div[data-baseweb="input"], div[data-baseweb="base-input"], .stTextInput>div {{
+    /* Zones de saisie noires */
+    div[data-baseweb="input"], div[data-baseweb="base-input"], .stTextInput>div {
         background-color: #111827 !important;  
         border: 1px solid #374151 !important;  
         border-radius: 8px !important;
-    }}
-    div[data-baseweb="input"] input, div[data-baseweb="base-input"] input, .stTextInput input {{
+    }
+    div[data-baseweb="input"] input, .stTextInput input {
         color: #FFFFFF !important;
         background-color: #111827 !important;
-    }}
+    }
+    
+    .element-container, .stMarkdown, div[data-testid="stBlock"] {
+        background-color: transparent !important;
+    }
 </style>
-
-<div class="weather-box">
-    <div class="weather-temp">{conditions}</div>
-    <div class="weather-loc">{localisation}</div>
-</div>
 """, unsafe_allow_html=True)
 
-# --- EN-TÊTE DE PAGE : LOGO CENTRÉ ET PROPORTIONNÉ ---
+# --- EN-TÊTE DE PAGE : LOGO CENTRÉ ---
 st.write("")
 if os.path.exists("logo.png"):
     col_l1, col_l2, col_l3, col_l4, col_l5 = st.columns([1.5, 1, 1.2, 1, 1.5])
@@ -137,7 +84,7 @@ st.markdown('<p style="text-align:center; color:#9CA3AF; font-size:16px; margin-
 query_params = st.query_params
 client_country = query_params["country"].upper() if "country" in query_params else "US"
 
-# Tarifs Premium ($99 / $249 / $499)
+# Vrais Tarifs mis à jour ($99 / $249 / $499)
 MATRICE_TARIFS = {
     "US": {"devise": "$", "starter": "99", "pro": "249", "enterprise": "499"},
     "UK": {"devise": "£", "starter": "79", "pro": "199", "enterprise": "399"},
@@ -156,7 +103,7 @@ if "step" not in st.session_state:
 
 st.write("---")
 
-# --- ENGINE ---
+# --- CORE ENGINE INTERFACE ---
 if st.session_state.step == "saisie":
     st.markdown(f"### 🌐 Market Analysis Engine • Country: {client_country}")
     categorie = st.radio("Select your industry vertical :", ["Pet Care / Animalier 🐶", "Pharmacy / Parapharmacie 💊"], horizontal=True)
@@ -217,4 +164,3 @@ elif st.session_state.step == "verrouille":
 
 st.write("---")
 st.markdown("<p style='color:#4B5563; font-size:12px; text-align:center;'>© 2026 KIMPESE SOFTWARE L.L.C. All rights reserved. Secured under Wyoming LLC Proprietary Laws.</p>", unsafe_allow_html=True)
-
