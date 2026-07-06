@@ -206,7 +206,6 @@ elif st.session_state.step == "verrouille":
         email_beta = st.text_input("Enter your business email to request priority access credentials :", placeholder="ceo@yourbrand.com")
         if st.button("Submit Request", type="primary"):
             if email_beta.strip():
-                # Enregistrement propre en DB avec le plan choisi
                 try:
                     conn = sqlite3.connect(DB_NAME)
                     cur = conn.cursor()
