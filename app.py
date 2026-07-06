@@ -3,13 +3,9 @@
 #  State of Registration: Wyoming, USA.
 # ==============================================================================
 import streamlit as st
-import sqlite3
 import os
 import requests
-import pandas as pd
 from datetime import datetime
-
-DB_NAME = "database.db"
 
 # Configuration globale de la page
 st.set_page_config(page_title="Kimpese Software | Global Pricing Intelligence", page_icon="🟢", layout="wide")
@@ -17,13 +13,10 @@ st.set_page_config(page_title="Kimpese Software | Global Pricing Intelligence", 
 # --- DESIGN SILICON VALLEY NOIR ET VERT ---
 st.markdown("""
 <style>
-    /* Fond noir profond universel */
     .stApp {
         background-color: #0A0E17 !important;
         color: #F3F4F6 !important;
     }
-    
-    /* Cartes de tarifs Silicon Valley */
     .sv-card {
         background: #111827 !important;
         border: 1px solid rgba(46, 204, 113, 0.2);
@@ -51,10 +44,7 @@ st.markdown("""
         text-transform: uppercase;
         letter-spacing: 1px;
     }
-    
     label, p, h3, span { color: #E5E7EB !important; }
-    
-    /* Zones de saisie noires */
     div[data-baseweb="input"], div[data-baseweb="base-input"], .stTextInput>div {
         background-color: #111827 !important;  
         border: 1px solid #374151 !important;  
@@ -64,22 +54,18 @@ st.markdown("""
         color: #FFFFFF !important;
         background-color: #111827 !important;
     }
-    
-    /* Éradication absolue de tous les blocs et lignes blanches résiduelles de Streamlit */
     div[data-testid="stVerticalBlock"] > div {
         background-color: transparent !important;
-        background: transparent !important;
         border: none !important;
         box-shadow: none !important;
     }
-    .element-container, .stMarkdown, div[data-testid="stBlock"], div[style*="background-color: rgb(255, 255, 255)"] {
+    .element-container, .stMarkdown, div[data-testid="stBlock"] {
         background-color: transparent !important;
-        background: transparent !important;
     }
 </style>
 """, unsafe_allow_html=True)
 
-# --- BLOC MÉTÉO SÉCURISÉ ---
+# --- BLOC MÉTÉO AUTOMATIQUE ---
 try:
     geo_req = requests.get("http://ip-api.com", timeout=3)
     if geo_req.status_code == 200:
@@ -134,6 +120,7 @@ devise = config["devise"]
 
 if "step" not in st.session_state: st.session_state.step = "saisie"
 if "choix_plan" not in st.session_state: st.session_state.choix_plan = None
+if "liste_emails" not in st.session_state: st.session_state.liste_emails = []
 
 st.write("---")
 
@@ -147,15 +134,6 @@ if st.session_state.step == "saisie":
         if nom_entreprise.strip():
             st.session_state.nom_marque = nom_entreprise.strip()
             st.session_state.vertical = "Animalier" if "Animalier" in categorie else "Parapharmacie"
-            try:
-                conn = sqlite3.connect(DB_NAME)
-                cur = conn.cursor()
-                cur.execute("INSERT INTO clients_saas (nom_marque, email_client, date_inscription, statut) VALUES (?, ?, ?, 'ESSAI')", 
-                            (st.session_state.nom_marque, f"contact@{st.session_state.nom_marque.lower().replace(' ', '')}.com", datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
-                conn.commit()
-                conn.close()
-            except: 
-                pass
             st.session_state.step = "verrouille"
             st.rerun()
 
@@ -207,6 +185,24 @@ elif st.session_state.step == "verrouille":
         email_beta = st.text_input("Enter your business email to request priority access credentials :", placeholder="ceo@yourbrand.com")
         if st.button("Submit Request", type="primary"):
             if email_beta.strip():
-                try:
-                    conn = sqlite3.connect(DB_NAME)
-                    cur = conn.cursor()
+                # Sauvegarde en mémoire instantanée
+                nouvelle_entree = {
+                    "Date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                    "Brand": st.session_state.nom_marque,
+                    "Vertical": st.session_state.vertical,
+                    "Plan": st.session_state.choix_plan,
+                    "Email": email_beta.strip()
+                }
+                st.session_state.liste_emails.append(nouvelle_entree)
+                st.success("✅ Request saved! Our deployment team will email your secure credentials within 24 hours.")
+                st.session_state.choix_plan = None
+
+# --- PANEL ADMINISTRATEUR INTERNE NETTOYÉ ---
+st.write("---")
+with st.expander("🛠️ Internal Database Viewer (Admin Only)"):
+    st.write("### 👥 Captured Prospect Leads")
+    if st.session_state.liste_emails:
+        import pandas as pd
+        df_leads = pd.DataFrame(st.session_state.liste_emails)
+        st.dataframe(df_leads, use_container_width=True)
+        csv = df_leads.to_csv(index=False).encode('utf-8')
