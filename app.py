@@ -53,16 +53,24 @@ st.markdown("""
     
     label, p, h3, span { color: #E5E7EB !important; }
     
-    /* Style spécifique pour le bloc météo natif */
+    /* Style spécifique pour le bloc météo natif centré */
     div[data-testid="stMetricValue"] {
         color: #2ECC71 !important;
         font-family: monospace !important;
         font-weight: bold !important;
+        text-align: center !important;
     }
     div[data-testid="stMetricLabel"] {
         color: #9CA3AF !important;
         text-transform: uppercase !important;
         letter-spacing: 1px !important;
+        text-align: center !important;
+    }
+    div[data-testid="stMetric"] {
+        text-align: center !important;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
     
     /* Zones de saisie noires */
@@ -100,8 +108,8 @@ else:
 
 st.markdown('<p style="text-align:center; color:#9CA3AF; font-size:16px; margin-top:15px; margin-bottom:10px;">Next-Gen Pricing Intelligence for Global Brands</p>', unsafe_allow_html=True)
 
-# --- ESPACE METEO NATIF ET FLUIDE ---
-col_m1, col_m2, col_m3 = st.columns([2, 1.2, 2])
+# --- ESPACE MÉTÉO NATIF PARFAITEMENT CENTRÉ AVEC LE LOGO ---
+col_m1, col_m2, col_m3 = st.columns([1.5, 1.2, 1.5])
 with col_m2:
     st.metric(label="🇺🇸 MYRTLE BEACH, SC", value="☀️ 85°F", delta="Live Weather")
 
@@ -142,7 +150,7 @@ if st.session_state.step == "saisie":
             st.rerun()
 
 elif st.session_state.step == "verrouille":
-    st.markdown(f"### 🧬 Scanner Status: <span style='color:#2ECC71;'>Active Tracking Enabled for {st.session_state.nom_marque} ({st.session_state.vertical})</span>", unsafe_allow_html=True)
+    st.markdown(f"### ### 🧬 Scanner Status: <span style='color:#2ECC71;'>Active Tracking Enabled for {st.session_state.nom_marque} ({st.session_state.vertical})</span>", unsafe_allow_html=True)
     st.write(f"Our tracking bot is currently mapping your retail competitors in the {st.session_state.vertical} sector. Choose a plan to unlock your intelligence dashboard.")
     st.write("")
     
