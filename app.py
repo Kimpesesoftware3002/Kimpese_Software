@@ -5,8 +5,6 @@
 import streamlit as st
 import os
 import pandas as pd
-import requests
-from datetime import datetime
 
 # Configuration globale de la page
 st.set_page_config(page_title="Kimpese Software | Global Pricing Intelligence", page_icon="🟢", layout="wide")
@@ -14,10 +12,13 @@ st.set_page_config(page_title="Kimpese Software | Global Pricing Intelligence", 
 # --- DESIGN SILICON VALLEY NOIR ET VERT ---
 st.markdown("""
 <style>
+    /* Fond noir profond universel */
     .stApp {
         background-color: #0A0E17 !important;
         color: #F3F4F6 !important;
     }
+    
+    /* Cartes de tarifs Silicon Valley */
     .sv-card {
         background: #111827 !important;
         border: 1px solid rgba(46, 204, 113, 0.2);
@@ -45,7 +46,10 @@ st.markdown("""
         text-transform: uppercase;
         letter-spacing: 1px;
     }
+    
     label, p, h3, span { color: #E5E7EB !important; }
+    
+    /* Zones de saisie noires */
     div[data-baseweb="input"], div[data-baseweb="base-input"], .stTextInput>div {
         background-color: #111827 !important;  
         border: 1px solid #374151 !important;  
@@ -55,8 +59,11 @@ st.markdown("""
         color: #FFFFFF !important;
         background-color: #111827 !important;
     }
+    
+    /* Éradication absolue de tous les blocs et lignes blanches résiduelles de Streamlit */
     div[data-testid="stVerticalBlock"] > div {
         background-color: transparent !important;
+        background: transparent !important;
         border: none !important;
         box-shadow: none !important;
     }
@@ -66,41 +73,15 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# --- COMPOSANT METEO HAUTE FIABILITE (IP-API + OPEN-METEO) ---
-html_meteo_client = """
+# --- ESPACE METEO AUTOMATIQUE PAR IMAGE TRANSPARENTE ---
+# S'adapte à la géographie du visiteur de manière native et sans aucun script informatique
+st.markdown("""
 <div style="position: absolute; top: -50px; right: 10px; z-index: 9999;">
-    <div id="weather-display" style="background: rgba(17, 24, 39, 0.9); border: 1px solid rgba(46, 204, 113, 0.2); padding: 10px 18px; border-radius: 12px; text-align: right; min-width: 160px; font-family: monospace;">
-        <div style="font-size: 16px; font-weight: 700; color: #2ECC71;" id="wf-temp">☀️ 84°F</div>
-        <div style="font-size: 11px; color: #9CA3AF; text-transform: uppercase;" id="wf-loc">MYRTLE BEACH, SC</div>
+    <div style="background: rgba(17, 24, 39, 0.9); border: 1px solid rgba(46, 204, 113, 0.2); padding: 5px 15px; border-radius: 12px; text-align: right; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
+        <img src="https://wttr.in" style="max-height: 45px; filter: invert(1) hue-rotate(90deg);" alt="Météo">
     </div>
 </div>
-
-<script>
-    fetch('https://ipapi.co')
-        .then(response => response.json())
-        .then(geo => {
-            const city = geo.city || "Myrtle Beach";
-            const region = geo.region_code || "SC";
-            const lat = geo.latitude;
-            const lon = geo.longitude;
-            
-            if(lat && lon) {
-                fetch(`https://open-meteo.com{lat}&longitude=${lon}&current_weather=true&temperature_unit=fahrenheit`)
-                    .then(res => res.json())
-                    .then(weather => {
-                        const tempF = Math.round(weather.current_weather.temperature);
-                        document.getElementById('wf-temp').innerText = "☀️ " + tempF + "°F";
-                        document.getElementById('wf-loc').innerText = city.toUpperCase() + ", " + region.toUpperCase();
-                    });
-            }
-        })
-        .catch(err => {
-            document.getElementById('wf-temp').innerText = "☀️ 84°F";
-            document.getElementById('wf-loc').innerText = "MYRTLE BEACH, SC";
-        });
-</script>
-"""
-st.markdown(html_meteo_client, unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
 # --- 🚀 PANEL ADMINISTRATEUR ACCESSIBLE EN PERMANENCE ---
 with st.sidebar:
@@ -210,4 +191,10 @@ elif st.session_state.step == "verrouille":
         st.info(f"🚀 **Kimpese Software is currently in Private Beta for the {st.session_state.choix_plan} Plan.**")
         email_beta = st.text_input("Enter your business email to request priority access credentials :", placeholder="ceo@yourbrand.com")
         if st.button("Submit Request", type="primary"):
+            if email_beta.strip():
+                st.session_state.liste_emails.append(email_beta.strip())
+                st.success("✅ Request saved! Our deployment team will email your secure credentials within 24 hours.")
+                st.session_state.choix_plan = None
 
+st.write("---")
+st.markdown("<p style='color:#4B5563; font-size:12px; text-align:center;'>© 2026 KIMPESE SOFTWARE L.L.C. All rights reserved. Secured under Wyoming, USA LLC Proprietary Laws.</p>", unsafe_allow_html=True)
