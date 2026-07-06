@@ -1,10 +1,7 @@
-#  PROPRIETARY NOTICE & COPYRIGHT LICENSE
-#  Copyright © 2026 KIMPESE SOFTWARE L.L.C. All rights reserved.
-#  State of Registration: Wyoming, USA.
-# ==============================================================================
 import streamlit as st
 import sqlite3
 import os
+import requests
 from datetime import datetime
 
 DB_NAME = "database.db"
@@ -19,6 +16,32 @@ st.markdown("""
     .stApp {
         background-color: #0A0E17 !important;
         color: #F3F4F6 !important;
+    }
+    
+    /* Widget Météo en haut à droite (Sécurisé) */
+    .weather-box {
+        position: absolute;
+        top: -10px;
+        right: 10px;
+        background: rgba(17, 24, 39, 0.9) !important;
+        border: 1px solid rgba(46, 204, 113, 0.2);
+        padding: 10px 18px;
+        border-radius: 12px;
+        text-align: right;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        font-family: monospace;
+        z-index: 999;
+    }
+    .weather-temp {
+        font-size: 16px;
+        font-weight: 700;
+        color: #2ECC71;
+    }
+    .weather-loc {
+        font-size: 11px;
+        color: #9CA3AF;
+        text-transform: uppercase;
+        letter-spacing: 1px;
     }
     
     /* Cartes de tarifs Silicon Valley */
@@ -68,6 +91,31 @@ st.markdown("""
     }
 </style>
 """, unsafe_allow_html=True)
+
+# --- BLOC MÉTÉO SÉCURISÉ ISOLE SANS BUG D'ACCOLADES ---
+try:
+    geo_req = requests.get("http://ip-api.com", timeout=3)
+    if geo_req.status_code == 200:
+        geo_data = geo_req.json()
+        ville_visiteur = geo_data.get("city", "Silicon Valley")
+        region_visiteur = geo_data.get("region", "CA")
+    else:
+        ville_visiteur, region_visiteur = "Myrtle Beach", "SC"
+except:
+    ville_visiteur, region_visiteur = "Myrtle Beach", "SC"
+
+try:
+    weather_req = requests.get(f"https://wttr.in{ville_visiteur}?format=%c+%t", timeout=3)
+    if weather_req.status_code == 200 and "Error" not in weather_req.text:
+        conditions_visiteur = weather_req.text.strip()
+    else:
+        conditions_visiteur = "☀️ 83°F"
+except:
+    conditions_visiteur = "☀️ 83°F"
+
+# Injection finale via concaténation propre (évite les conflits CSS)
+html_meteo_propre = "<div class='weather-box'><div class='weather-temp'>" + conditions_visiteur + "</div><div class='weather-loc'>" + ville_visiteur + ", " + region_visiteur + "</div></div>"
+st.markdown(html_meteo_propre, unsafe_allow_html=True)
 
 # --- EN-TÊTE DE PAGE : LOGO CENTRÉ ---
 st.write("")
