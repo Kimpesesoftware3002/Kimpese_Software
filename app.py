@@ -31,7 +31,7 @@ st.markdown("""
         text-align: center;
         box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
         transition: all 0.3s ease;
-        margin-bottom: 15px;
+        margin-bottom: 5px;
     }
     .sv-card:hover {
         border-color: #2ECC71;
@@ -64,8 +64,16 @@ st.markdown("""
         background-color: #111827 !important;
     }
     
-    .element-container, .stMarkdown, div[data-testid="stBlock"] {
+    /* Éradication absolue de tous les blocs et lignes blanches résiduelles de Streamlit */
+    div[data-testid="stVerticalBlock"] > div {
         background-color: transparent !important;
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+    .element-container, .stMarkdown, div[data-testid="stBlock"], div[style*="background-color: rgb(255, 255, 255)"] {
+        background-color: transparent !important;
+        background: transparent !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -91,7 +99,7 @@ try:
 except:
     conditions_visiteur = "☀️ 84°F"
 
-html_meteo_propre = "<div style='position: absolute; top: -50px; right: 10px; z-index: 9999;'><div style='background: rgba(17, 24, 39, 0.9); border: 1px solid rgba(46, 204, 113, 0.2); padding: 10px 18px; border-radius: 12px; text-align: right;'><div style='font-size: 16px; font-weight: 700; color: #2ECC71;'>" + conditions_visiteur + "</div><div style='font-size: 11px; color: #9CA3AF; text-transform: uppercase;'>" + ville_visiteur + ", " + region_visiteur + "</div></div></div>"
+html_meteo_propre = "<div style='position: absolute; top: -50px; right: 10px; z-index: 9999;'><div style='background: rgba(17, 24, 39, 0.9); border: 1px solid rgba(46, 204, 113, 0.2); padding: 10px 18px; border-radius: 12px; text-align: right;'><div style='font-size: 16px; font-weight: 700; color: #2ECC71;'> " + conditions_visiteur + "</div><div style='font-size: 11px; color: #9CA3AF; text-transform: uppercase;'> " + ville_visiteur + ", " + region_visiteur + "</div></div></div>"
 st.markdown(html_meteo_propre, unsafe_allow_html=True)
 
 # --- EN-TÊTE DE PAGE : LOGO CENTRÉ ---
@@ -109,7 +117,7 @@ st.markdown('<p style="text-align:center; color:#9CA3AF; font-size:16px; margin-
 query_params = st.query_params
 client_country = query_params["country"].upper() if "country" in query_params else "US"
 
-# Tarifs Premium ($99 / $249 / $499) [04/07 08:37]
+# Tarifs Premium ($99 / $249 / $499)
 MATRICE_TARIFS = {
     "US": {"devise": "$", "starter": "99", "pro": "249", "enterprise": "499"},
     "UK": {"devise": "£", "starter": "79", "pro": "199", "enterprise": "399"},
@@ -190,7 +198,7 @@ elif st.session_state.step == "verrouille":
         if st.button("Contact Sales", key="btn_ent", use_container_width=True):
             st.session_state.choix_plan = "Enterprise"
 
-    # --- ZONE FORMULAIRE BETA COLLECTE EMAIL ---
+    # --- ZONE FORMULAIRE BETA ---
     if st.session_state.choix_plan:
         st.write("---")
         st.info(f"🚀 **Kimpese Software is currently in Private Beta for the {st.session_state.choix_plan} Plan.**")
@@ -201,4 +209,3 @@ elif st.session_state.step == "verrouille":
                 st.session_state.choix_plan = None
 
 st.write("---")
-st.markdown("<p style='color:#4B5563; font-size:12px; text-align:center;'>© 2026 KIMPESE SOFTWARE L.L.C. All rights reserved. Secured under Wyoming, USA LLC Proprietary Laws.</p>", unsafe_allow_html=True)
