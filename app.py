@@ -12,13 +12,16 @@ DB_NAME = "database.db"
 # Configuration de la page
 st.set_page_config(page_title="Kimpese Software | Global Pricing Intelligence", page_icon="🟢", layout="wide")
 
-# --- DESIGN SILICON VALLEY NOIR ET VERT ---
+# --- DESIGN SILICON VALLEY NOIR ET VERT (ZONE DE TEXTE NOIRE FORCEE) ---
 st.markdown("""
 <style>
+    /* Fond noir profond général */
     .stApp {
         background-color: #0A0E17 !important;
         color: #F3F4F6 !important;
     }
+    
+    /* Centrage et structure de l'en-tête */
     .logo-container {
         display: flex;
         justify-content: center;
@@ -45,6 +48,8 @@ st.markdown("""
         color: #9CA3AF !important;
         margin-top: 5px;
     }
+    
+    /* Cartes de tarifs Tech */
     .sv-card {
         background: rgba(17, 24, 39, 0.8);
         border: 1px solid rgba(46, 204, 113, 0.2);
@@ -73,16 +78,28 @@ st.markdown("""
         text-transform: uppercase;
         letter-spacing: 1px;
     }
+    
+    /* Labels globaux */
     label, p, h3 { color: #E5E7EB !important; }
-    div[data-baseweb="input"] { background-color: #1F2937 !important; border: 1px solid #374151 !important; }
-    div[data-baseweb="input"] input { color: white !important; }
+    
+    /* 🚨 SÉCURISATION DU FOND NOIR POUR LA ZONE DE CLIC (INPUT) 🚨 */
+    div[data-baseweb="input"] {
+        background-color: #111827 !important;  /* Fond noir anthracite */
+        border: 1px solid #374151 !important;  /* Bordure grise tech */
+        border-radius: 8px !important;
+    }
+    
+    /* Force la couleur du texte tapé par l'utilisateur à rester blanche */
+    div[data-baseweb="input"] input {
+        color: #FFFFFF !important;
+        background-color: #111827 !important;
+    }
 </style>
 """, unsafe_allow_html=True)
 
-# --- EN-TÊTE DE PAGE : LOGO FORCE AU CENTRE ---
+# --- EN-TÊTE DE PAGE : LOGO CENTRÉ ---
 if os.path.exists("logo.png"):
-    # Utilisation des colonnes Streamlit pour forcer un centrage parfait de l'image
-    col_logo1, col_logo2, col_logo3 = st.columns([1, 1, 1])
+    col_logo1, col_logo2, col_logo3 = st.columns([1, 2, 1])
     with col_logo2:
         st.image("logo.png", use_container_width=True)
 else:
@@ -94,7 +111,7 @@ st.markdown('<p style="text-align:center; color:#9CA3AF; font-size:16px; margin-
 query_params = st.query_params
 client_country = query_params["country"].upper() if "country" in query_params else "US"
 
-# 📊 CONFIGURATION REELLE METRIC DE VOS TARIFS PREMIUM 
+# 📊 CONFIGURATION DES VRAIS TARIFS MATRICE PREMIUM ($99 / $249 / $499)
 MATRICE_TARIFS = {
     "US": {"devise": "$", "starter": "99", "pro": "249", "enterprise": "499"},
     "UK": {"devise": "£", "starter": "79", "pro": "199", "enterprise": "399"},
