@@ -209,3 +209,4 @@ elif st.session_state.step == "verrouille":
                 try:
                     conn = sqlite3.connect(DB_NAME)
                     cur = conn.cursor()
+
