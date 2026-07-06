@@ -211,4 +211,4 @@ elif st.session_state.step == "verrouille":
         st.button("Contact Sales", key="btn_ent", use_container_width=True)
 
 st.write("---")
-st.markdown("<p style='color:#4B5563; font-size:12px; text-align:center;'>© 2026 KIMPESE SOFTWARE L.L.C. All rights reserved. Secured under Wyoming LLC Proprietary Laws.</p>", unsafe_allow_html=True)
+st.markdown("<p style='color:#4B5563; font-size:12px; text-align:center;'>© 2026 KIMPESE SOFTWARE L.L.C. All rights reserved. Secured under Wyoming, USA LLC Proprietary Laws.</p>", unsafe_allow_html=True)
