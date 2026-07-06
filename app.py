@@ -83,7 +83,6 @@ html_meteo_client = """
 </div>
 
 <script>
-    // 1. Détection des coordonnées géographiques du visiteur (Latitude / Longitude) via son IP
     fetch('https://ipapi.co')
         .then(response => response.json())
         .then(geo => {
@@ -93,7 +92,6 @@ html_meteo_client = """
             const lon = geo.longitude;
             
             if(lat && lon) {
-                // 2. Appel à Open-Meteo pour obtenir la vraie température en Fahrenheit de cette position
                 fetch(`https://open-meteo.com{lat}&longitude=${lon}&current_weather=true&temperature_unit=fahrenheit`)
                     .then(res => res.json())
                     .then(weather => {
@@ -104,7 +102,6 @@ html_meteo_client = """
             }
         })
         .catch(err => {
-            // Sécurité par défaut (Fallback)
             document.getElementById('wf-temp').innerText = "☀️ 84°F";
             document.getElementById('wf-loc').innerText = "MYRTLE BEACH, SC";
         });
@@ -135,7 +132,7 @@ MATRICE_TARIFS = {
     "AU": {"devise": "AU$", "starter": "149", "pro": "379", "enterprise": "749"}
 }
 
-if client_country not in MATRIFS_TARIFS:
+if client_country not in MATRICE_TARIFS:
     client_country = "US"
 
 config = MATRICE_TARIFS[client_country]
@@ -209,3 +206,8 @@ elif st.session_state.step == "verrouille":
         if st.button("Submit Request", type="primary"):
             if email_beta.strip():
                 nouvelle_entree = {
+                    "Date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                    "Brand": st.session_state.nom_marque,
+                    "Vertical": st.session_state.vertical,
+                    "Plan": st.session_state.choix_plan,
+                    "Email": email_beta.strip()
