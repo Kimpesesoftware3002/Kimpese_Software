@@ -9,6 +9,10 @@ import pandas as pd
 # Configuration globale de la page
 st.set_page_config(page_title="Kimpese Software | Global Pricing Intelligence", page_icon="🟢", layout="wide")
 
+# Inicialisation de la liste des e-mails en mémoire vive
+if "liste_emails" not in st.session_state:
+    st.session_state.liste_emails = []
+
 # --- DESIGN SILICON VALLEY NOIR ET VERT ---
 st.markdown("""
 <style>
@@ -60,7 +64,7 @@ st.markdown("""
         background-color: #111827 !important;
     }
     
-    /* Éradication absolue de tous les blocs et lignes blanches résiduelles de Streamlit */
+    /* Nettoyage des fonds blancs de Streamlit */
     div[data-testid="stVerticalBlock"] > div {
         background-color: transparent !important;
         background: transparent !important;
@@ -73,30 +77,6 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# --- ESPACE METEO AUTOMATIQUE PAR IMAGE TRANSPARENTE ---
-# S'adapte à la géographie du visiteur de manière native et sans aucun script informatique
-st.markdown("""
-<div style="position: absolute; top: -50px; right: 10px; z-index: 9999;">
-    <div style="background: rgba(17, 24, 39, 0.9); border: 1px solid rgba(46, 204, 113, 0.2); padding: 5px 15px; border-radius: 12px; text-align: right; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
-        <img src="https://wttr.in" style="max-height: 45px; filter: invert(1) hue-rotate(90deg);" alt="Météo">
-    </div>
-</div>
-""", unsafe_allow_html=True)
-
-# --- 🚀 PANEL ADMINISTRATEUR ACCESSIBLE EN PERMANENCE ---
-with st.sidebar:
-    st.write("## 🛠️ Admin Control Panel")
-    if "liste_emails" not in st.session_state:
-        st.session_state.liste_emails = []
-    
-    if st.session_state.liste_emails:
-        df_leads = pd.DataFrame(st.session_state.liste_emails, columns=["Emails Inscrits"])
-        st.dataframe(df_leads, use_container_width=True)
-        csv = df_leads.to_csv(index=False).encode('utf-8')
-        st.download_button(label="📥 Download CSV", data=csv, file_name="kimpese_leads.csv", mime="text/csv", use_container_width=True)
-    else:
-        st.info("No leads captured yet in this active session.")
-
 # --- EN-TÊTE DE PAGE : LOGO CENTRÉ ---
 st.write("")
 if os.path.exists("logo.png"):
@@ -106,7 +86,17 @@ if os.path.exists("logo.png"):
 else:
     st.markdown('<div style="text-align:center; padding:20px 0;"><h1 style="color:white; margin:0;">KIMPESE SOFTWARE</h1></div>', unsafe_allow_html=True)
 
-st.markdown('<p style="text-align:center; color:#9CA3AF; font-size:16px; margin-top:15px; margin-bottom:30px;">Next-Gen Pricing Intelligence for Global Brands</p>', unsafe_allow_html=True)
+st.markdown('<p style="text-align:center; color:#9CA3AF; font-size:16px; margin-top:15px; margin-bottom:10px;">Next-Gen Pricing Intelligence for Global Brands</p>', unsafe_allow_html=True)
+
+# --- ESPACE METEO INTEGRE ET DISCRET AU CENTRE ---
+# Ce widget natif par image s'affiche au milieu et s'adapte à la position de l'utilisateur automatiquement
+col_m1, col_m2, col_m3 = st.columns([2, 1.2, 2])
+with col_m2:
+    st.markdown("""
+    <div style="background: rgba(17, 24, 39, 0.9); border: 1px solid rgba(46, 204, 113, 0.2); padding: 5px 15px; border-radius: 12px; text-align: center; margin-bottom: 20px;">
+        <img src="https://wttr.in" style="max-height: 35px; filter: invert(1) hue-rotate(90deg);" alt="Météo Visiteur">
+    </div>
+    """, unsafe_allow_html=True)
 
 # Détection pays via URL
 query_params = st.query_params
@@ -196,5 +186,16 @@ elif st.session_state.step == "verrouille":
                 st.success("✅ Request saved! Our deployment team will email your secure credentials within 24 hours.")
                 st.session_state.choix_plan = None
 
+# --- PANEL ADMINISTRATEUR DEPLIABLE TOUT EN BAS ---
 st.write("---")
+with st.expander("🛠️ Internal Database Viewer (Admin Only)"):
+    st.write("### 👥 Captured Prospect Emails")
+    if st.session_state.liste_emails:
+        df_leads = pd.DataFrame(st.session_state.liste_emails, columns=["Emails Collectés"])
+        st.dataframe(df_leads, use_container_width=True)
+        csv = df_leads.to_csv(index=False).encode('utf-8')
+        st.download_button(label="📥 Download Leads List (CSV)", data=csv, file_name="kimpese_leads.csv", mime="text/csv")
+    else:
+        st.info("No leads captured in this active session yet.")
+
 st.markdown("<p style='color:#4B5563; font-size:12px; text-align:center;'>© 2026 KIMPESE SOFTWARE L.L.C. All rights reserved. Secured under Wyoming, USA LLC Proprietary Laws.</p>", unsafe_allow_html=True)
