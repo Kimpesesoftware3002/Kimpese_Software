@@ -9,9 +9,7 @@ import pandas as pd
 # Configuration globale de la page
 st.set_page_config(page_title="Kimpese Software | Global Pricing Intelligence", page_icon="🟢", layout="wide")
 
-# Initialisation de la liste des e-mails en mémoire vive
-if "liste_emails" not in st.session_state:
-    st.session_state.liste_emails = []
+if "liste_emails" not in st.session_state: st.session_state.liste_emails = []
 
 # --- DESIGN SILICON VALLEY NOIR ET VERT ---
 st.markdown("""
@@ -22,6 +20,41 @@ st.markdown("""
         color: #F3F4F6 !important;
     }
     
+    /* BANDEAU FLASH ANIME FUTURISTE */
+    .flash-banner {
+        background: radial-gradient(circle, #111827 0%, #070a10 100%);
+        border: 1px solid #2ECC71;
+        border-radius: 12px;
+        padding: 25px;
+        text-align: center;
+        box-shadow: 0 0 30px rgba(46, 204, 113, 0.2);
+        margin: 20px auto;
+        max-width: 800px;
+        overflow: hidden;
+    }
+    
+    .matrix-text {
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 18px;
+        font-weight: bold;
+        color: #2ECC71;
+        white-space: nowrap;
+        border-right: 3px solid #2ECC71;
+        animation: typing 3.5s steps(40, end) infinite, blink 0.75s step-end infinite;
+        margin: 0 auto;
+        letter-spacing: 1px;
+    }
+    
+    @keyframes typing {
+        0% { width: 0; text-shadow: 0 0 0px #2ECC71; }
+        50% { width: 100%; text-shadow: 0 0 10px #2ECC71; }
+        100% { width: 0; text-shadow: 0 0 0px #2ECC71; }
+    }
+    @keyframes blink {
+        from, to { border-color: transparent }
+        50% { border-color: #2ECC71; }
+    }
+
     /* Cartes de tarifs Silicon Valley */
     .sv-card {
         background: #111827 !important;
@@ -53,7 +86,7 @@ st.markdown("""
     
     label, p, h3, span { color: #E5E7EB !important; }
     
-    /* Style spécifique pour le bloc météo natif centré */
+    /* Style spécifique pour le bloc météo natif */
     div[data-testid="stMetricValue"] {
         color: #2ECC71 !important;
         font-family: monospace !important;
@@ -65,12 +98,6 @@ st.markdown("""
         text-transform: uppercase !important;
         letter-spacing: 1px !important;
         text-align: center !important;
-    }
-    div[data-testid="stMetric"] {
-        text-align: center !important;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
     }
     
     /* Zones de saisie noires */
@@ -84,10 +111,8 @@ st.markdown("""
         background-color: #111827 !important;
     }
     
-    /* Nettoyage des fonds blancs de Streamlit */
     div[data-testid="stVerticalBlock"] > div {
         background-color: transparent !important;
-        background: transparent !important;
         border: none !important;
         box-shadow: none !important;
     }
@@ -101,17 +126,22 @@ st.markdown("""
 st.write("")
 if os.path.exists("logo.png"):
     col_l1, col_l2, col_l3, col_l4, col_l5 = st.columns([1.5, 1, 1.2, 1, 1.5])
-    with col_l3:
-        st.image("logo.png", use_container_width=True)
+    with col_l3: st.image("logo.png", use_container_width=True)
 else:
     st.markdown('<div style="text-align:center; padding:20px 0;"><h1 style="color:white; margin:0;">KIMPESE SOFTWARE</h1></div>', unsafe_allow_html=True)
 
 st.markdown('<p style="text-align:center; color:#9CA3AF; font-size:16px; margin-top:15px; margin-bottom:10px;">Next-Gen Pricing Intelligence for Global Brands</p>', unsafe_allow_html=True)
 
-# --- ESPACE MÉTÉO NATIF PARFAITEMENT CENTRÉ AVEC LE LOGO ---
+# --- ESPACE MÉTÉO CENTRÉ ---
 col_m1, col_m2, col_m3 = st.columns([1.5, 1.2, 1.5])
-with col_m2:
-    st.metric(label="🇺🇸 MYRTLE BEACH, SC", value="☀️ 85°F", delta="Live Weather")
+with col_m2: st.metric(label="🇺🇸 MYRTLE BEACH, SC", value="☀️ 85°F", delta="Live Weather")
+
+# --- INTERFACE DE LA BANDE D'ANNONCE FLASH FLASH DYNAMIQUE ---
+st.markdown("""
+<div class="flash-banner">
+    <div class="matrix-text">⚡ [SYSTEM]: MAPPING COMPETITOR PRICING GAPS OVERNIGHT...</div>
+</div>
+""", unsafe_allow_html=True)
 
 # Détection pays via URL
 query_params = st.query_params
@@ -124,10 +154,7 @@ MATRICE_TARIFS = {
     "CA": {"devise": "CA$", "starter": "139", "pro": "349", "enterprise": "699"},
     "AU": {"devise": "AU$", "starter": "149", "pro": "379", "enterprise": "749"}
 }
-
-if client_country not in MATRICE_TARIFS:
-    client_country = "US"
-
+if client_country not in MATRICE_TARIFS: client_country = "US"
 config = MATRICE_TARIFS[client_country]
 devise = config["devise"]
 
@@ -150,47 +177,21 @@ if st.session_state.step == "saisie":
             st.rerun()
 
 elif st.session_state.step == "verrouille":
-    st.markdown(f"### ### 🧬 Scanner Status: <span style='color:#2ECC71;'>Active Tracking Enabled for {st.session_state.nom_marque} ({st.session_state.vertical})</span>", unsafe_allow_html=True)
-    st.write(f"Our tracking bot is currently mapping your retail competitors in the {st.session_state.vertical} sector. Choose a plan to unlock your intelligence dashboard.")
+    st.markdown(f"### 🧬 Scanner Status: <span style='color:#2ECC71;'>Active Tracking Enabled for {st.session_state.nom_marque} ({st.session_state.vertical})</span>", unsafe_allow_html=True)
+    st.write("Our tracking bot is currently mapping your retail competitors. Choose a plan to unlock your intelligence dashboard.")
     st.write("")
     
     col1, col2, col3 = st.columns(3)
-    
     with col1:
-        st.markdown(f"""
-        <div class="sv-card">
-            <div style="font-size: 20px; font-weight:700; color:#FFFFFF;">🌱 Starter</div>
-            <div style="font-size: 38px; font-weight:800; margin:15px 0; color:#FFFFFF;">{devise}{config['starter']}<span style="font-size:14px; font-weight:400; color:#9CA3AF;">/mo</span></div>
-            <p style="color:#9CA3AF; font-size:14px; line-height:1.6;">Track 50 active products<br>Daily price updates<br>Single country analytics</p>
-        </div>
-        """, unsafe_allow_html=True)
-        if st.button("Launch Starter Trial", key="btn_str", use_container_width=True):
-            st.session_state.choix_plan = "Starter"
-        
+        st.markdown(f'<div class="sv-card"><div style="font-size: 20px; font-weight:700; color:#FFFFFF;">🌱 Starter</div><div style="font-size: 38px; font-weight:800; margin:15px 0; color:#FFFFFF;">{devise}{config["starter"]}<span style="font-size:14px; font-weight:400; color:#9CA3AF;">/mo</span></div><p style="color:#9CA3AF; font-size:14px; line-height:1.6;">Track 50 active products<br>Daily price updates<br>Single country analytics</p></div>', unsafe_allow_html=True)
+        if st.button("Launch Starter Trial", key="btn_str", use_container_width=True): st.session_state.choix_plan = "Starter"
     with col2:
-        st.markdown(f"""
-        <div class="sv-card" style="border-color: #2ECC71;">
-            <div class="sv-badge">MOST POPULAR</div>
-            <div style="font-size: 20px; font-weight:700; color:#2ECC71;">⚡ Pro Tracker</div>
-            <div style="font-size: 38px; font-weight:800; margin:15px 0; color:#FFFFFF;">{devise}{config['pro']}<span style="font-size:14px; font-weight:400; color:#9CA3AF;">/mo</span></div>
-            <p style="color:#9CA3AF; font-size:14px; line-height:1.6;">Track 500 active products<br>Instant stock & price alerts<br>Multi-country tracking</p>
-        </div>
-        """, unsafe_allow_html=True)
-        if st.button("Launch Pro Trial", key="btn_pro", use_container_width=True):
-            st.session_state.choix_plan = "Pro"
-        
+        st.markdown(f'<div class="sv-card" style="border-color: #2ECC71;"><div class="sv-badge">MOST POPULAR</div><div style="font-size: 20px; font-weight:700; color:#2ECC71;">⚡ Pro Tracker</div><div style="font-size: 38px; font-weight:800; margin:15px 0; color:#FFFFFF;">{devise}{config["pro"]}<span style="font-size:14px; font-weight:400; color:#9CA3AF;">/mo</span></div><p style="color:#9CA3AF; font-size:14px; line-height:1.6;">Track 500 active products<br>Instant stock & price alerts<br>Multi-country tracking</p></div>', unsafe_allow_html=True)
+        if st.button("Launch Pro Trial", key="btn_pro", use_container_width=True): st.session_state.choix_plan = "Pro"
     with col3:
-        st.markdown(f"""
-        <div class="sv-card">
-            <div style="font-size: 20px; font-weight:700; color:#FFFFFF;">👑 Enterprise</div>
-            <div style="font-size: 38px; font-weight:800; margin:15px 0; color:#FFFFFF;">{devise}{config['enterprise']}<span style="font-size:14px; font-weight:400; color:#9CA3AF;">/mo</span></div>
-            <p style="color:#9CA3AF; font-size:14px; line-height:1.6;">Unlimited products & stores<br>Custom API access<br>Dedicated Account Manager</p>
-        </div>
-        """, unsafe_allow_html=True)
-        if st.button("Contact Sales", key="btn_ent", use_container_width=True):
-            st.session_state.choix_plan = "Enterprise"
+        st.markdown(f'<div class="sv-card"><div style="font-size: 20px; font-weight:700; color:#FFFFFF;">👑 Enterprise</div><div style="font-size: 38px; font-weight:800; margin:15px 0; color:#FFFFFF;">{devise}{config["enterprise"]}<span style="font-size:14px; font-weight:400; color:#9CA3AF;">/mo</span></div><p style="color:#9CA3AF; font-size:14px; line-height:1.6;">Unlimited products & stores<br>Custom API access<br>Dedicated Account Manager</p></div>', unsafe_allow_html=True)
+        if st.button("Contact Sales", key="btn_ent", use_container_width=True): st.session_state.choix_plan = "Enterprise"
 
-    # --- ZONE FORMULAIRE BETA ---
     if st.session_state.choix_plan:
         st.write("---")
         st.info(f"🚀 **Kimpese Software is currently in Private Beta for the {st.session_state.choix_plan} Plan.**")
@@ -209,8 +210,3 @@ with st.expander("🛠️ Internal Database Viewer (Admin Only)"):
         df_leads = pd.DataFrame(st.session_state.liste_emails, columns=["Emails Collectés"])
         st.dataframe(df_leads, use_container_width=True)
         csv = df_leads.to_csv(index=False).encode('utf-8')
-        st.download_button(label="📥 Download Leads List (CSV)", data=csv, file_name="kimpese_leads.csv", mime="text/csv")
-    else:
-        st.info("No leads captured in this active session yet.")
-
-st.markdown("<p style='color:#4B5563; font-size:12px; text-align:center;'>© 2026 KIMPESE SOFTWARE L.L.C. All rights reserved. Secured under Wyoming, USA LLC Proprietary Laws.</p>", unsafe_allow_html=True)
