@@ -30,7 +30,7 @@ def lire_emails_csv():
 
 
 # =====================================================================
-# INJECTION CSS SÉCURISÉE (SANS CASSER LES BOUTONS NI LES TEXTES)
+# INJECTION CSS SÉCURISÉE (NETTOYAGE COMPLET DES BANDES BLANCHES)
 # =====================================================================
 st.markdown("""
 <style>
@@ -43,62 +43,63 @@ h3, h4, h5, p, span, label, div {
     color: #00FF00 !important;
     font-family: 'Courier New', Courier, monospace !important;
 }
+/* Nettoyage des bordures et fonds des boutons pour enlever le blanc */
+div.stButton > button {
+    background-color: #051a05 !important;
+    color: #00FF00 !important;
+    border: 1px solid #00FF00 !important;
+}
 /* Bordures vertes propres pour les champs de saisie */
 input {
     border: 1px solid #00FF00 !important;
     background-color: #000000 !important;
+    color: #00FF00 !important;
 }
 </style>
 """, unsafe_allow_html=True)
 
 
 # =====================================================================
-# SECTION 1 : EN-TÊTE CORRIGÉ (LOGO ET MÉTÉO ALIGNÉS À GAUCHE)
+# SECTION 1 : LOGO & MÉTÉO PARFAITEMENT CENTRÉS EN HAUT (PILOTE HTML)
 # =====================================================================
-st.markdown("<h3 style='text-align: center; color: #00FF00; margin-bottom: 25px;'>KIMPESE SOFTWARE</h3>", unsafe_allow_html=True)
+st.markdown("<h3 style='text-align: center; color: #00FF00; margin-bottom: 15px;'>KIMPESE SOFTWARE</h3>", unsafe_allow_html=True)
 
-# Alignement stabilisé : 1.5 de vide à gauche pour ramener vers la gauche
-col_vide_gauche, col_logo, col_meteo, col_vide_droite = st.columns([1.5, 1.2, 0.9, 1.4])
-
-with col_logo:
-    if os.path.exists("logo.png"):
-        st.image("logo.png", width=170)
-    else:
-        st.markdown("<div style='border: 1px dashed #00FF00; padding: 20px; text-align: center;'>[ Logo Ready ]</div>", unsafe_allow_html=True)
-
-with col_meteo:
-    st.markdown("""
-    <div style='text-align: center; border: 1px solid #00FF00; padding: 8px; background-color: #051a05; border-radius: 5px; width: 130px; margin-top: 15px;'>
-        <span style='font-size: 18px; color: #FFFFFF; font-weight: bold;'>☀️ 85°F</span><br>
-        <span style='color: #00FF00; font-size: 10px;'>● Live Weather</span>
+# Ce tableau HTML force le centrage absolu sur l'écran
+st.markdown("""
+<div style='display: flex; justify-content: center; align-items: center; gap: 40px; margin-bottom: 25px;'>
+    <div>
+        <img src='https://githubusercontent.com' width='165' style='display: block;'>
     </div>
-    """, unsafe_allow_html=True)
+    <div style='border: 1px solid #00FF00; padding: 10px 20px; background-color: #051a05; border-radius: 5px; width: 140px; text-align: center;'>
+        <span style='font-size: 22px; color: #FFFFFF; font-weight: bold;'>☀️ 85°F</span><br>
+        <span style='color: #00FF00; font-size: 11px;'>● Live Weather</span>
+    </div>
+</div>
+""", unsafe_allow_html=True)
 
 
 # =====================================================================
-# SECTION 2 : BANDEAU DÉFILANT FLUIDE (SANS CADRE LOURD)
+# SECTION 2 : BANDEAU DÉFILANT FLUIDE REPOSITIONNÉ
 # =====================================================================
-st.write("")
 st.markdown(
     """
-    <marquee style='color: #00FF00; font-family: monospace; font-size: 20px; background: transparent; padding: 5px;'>
+    <marquee style='color: #00FF00; font-family: monospace; font-size: 20px; background: transparent; padding: 5px; margin-bottom: 20px;'>
         [SYSTEM]: MAPPING COMPETITOR PRICING OVERSIGHT
     </marquee>
     """, 
     unsafe_allow_html=True
 )
-st.write("")
 
 
 # =====================================================================
-# SECTION 3 : LE CHOIX TARIFAIRE ET INFOS
+# SECTION 3 : INFOS MOTEUR D'ANALYSE
 # =====================================================================
 st.markdown("#### 🟢 Market Analysis Engine • Country: US")
 st.write("Select your industry vertical:")
 
 
 # =====================================================================
-# SECTION 4 : LES 3 CARTES DE TARIFICATION
+# SECTION 4 : LES 3 CARTES DE TARIFICATION (BOUTONS VERTS RESTAURÉS)
 # =====================================================================
 col_card_1, col_card_2, col_card_3 = st.columns(3)
 
@@ -135,7 +136,6 @@ with col_card_3:
     if st.button("Contact Sales", key="btn_ent"):
         st.session_state.choix_plan = "Enterprise"
 
-# Maintien de l'affichage du choix utilisateur
 if "choix_plan" in st.session_state and st.session_state.choix_plan:
     st.info(f"Selected Option: {st.session_state.choix_plan} Plan Active.")
 
