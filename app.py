@@ -30,11 +30,11 @@ def lire_emails_csv():
 
 
 # =====================================================================
-# INTERDICTION DU FOND BLANC : INJECTION CSS RADICALE
+# INJECTION CSS POUR LE DESIGN VERT ET NOIR
 # =====================================================================
 st.markdown("""
 <style>
-/* Forçage absolu du fond noir sur tous les éléments de la page */
+/* Forçage absolu du fond noir */
 .stApp, div[data-testid="stAppViewContainer"], div[data-testid="stHeader"] {
     background-color: #000000 !important;
     color: #00FF00 !important;
@@ -65,26 +65,28 @@ h3, h4, h5, p, span, label, div {
 
 
 # =====================================================================
-# SECTION 1 : LOGO & MÉTÉO PARFAITEMENT CENTRÉS EN HTML
+# SECTION 1 : TITRE & ALIGNEMENT VISUEL PARFAIT (LOGO ET METEO CORRIGÉS)
 # =====================================================================
-st.markdown("<h3 style='text-align: center; color: #00FF00; margin-bottom: 20px;'>KIMPESE SOFTWARE</h3>", unsafe_allow_html=True)
+st.markdown("<h3 style='text-align: center; color: #00FF00; margin-bottom: 25px;'>KIMPESE SOFTWARE</h3>", unsafe_allow_html=True)
 
-# Utilisation d'une table HTML pour forcer l'alignement côte à côte ET le centrage parfait au milieu
-st.markdown("""
-<table style='margin-left: auto; margin-right: auto; border: none; background: transparent;'>
-    <tr style='background: transparent;'>
-        <td style='border: none; padding-right: 30px; vertical-align: middle; background: transparent;'>
-            <img src='https://githubusercontent.com' width='160' style='border-radius: 5px;'>
-        </td>
-        <td style='border: none; vertical-align: middle; background: transparent;'>
-            <div style='text-align: center; border: 1px solid #00FF00; padding: 15px; background-color: #051a05; border-radius: 5px; width: 160px;'>
-                <span style='font-size: 24px; color: #FFFFFF; font-weight: bold;'>☀️ 85°F</span><br>
-                <span style='color: #00FF00; font-size: 11px;'>● Live Weather</span>
-            </div>
-        </td>
-    </tr>
-</table>
-""", unsafe_allow_html=True)
+# Utilisation de 4 colonnes pour centrer l'ensemble et donner plus de place au Logo qu'à la Météo
+col_vide_gauche, col_logo, col_meteo, col_vide_droite = st.columns([1.5, 1.2, 0.9, 1.2])
+
+with col_logo:
+    # Utilisation de la fonction native de Streamlit pour forcer l'affichage de l'image locale sans bug de lien
+    if os.path.exists("logo.png"):
+        st.image("logo.png", width=170)
+    else:
+        st.markdown("<div style='border: 1px dashed #00FF00; padding: 20px; text-align: center;'>[ Logo Manquant ]</div>", unsafe_allow_html=True)
+
+with col_meteo:
+    # Réduction de la boîte météo et de l'écriture pour qu'elle reste plus petite que votre logo
+    st.markdown("""
+    <div style='text-align: center; border: 1px solid #00FF00; padding: 8px; background-color: #051a05; border-radius: 5px; width: 130px; margin-top: 15px;'>
+        <span style='font-size: 18px; color: #FFFFFF; font-weight: bold;'>☀️ 85°F</span><br>
+        <span style='color: #00FF00; font-size: 10px;'>● Live Weather</span>
+    </div>
+    """, unsafe_allow_html=True)
 
 st.write("")
 st.markdown("#### 🟢 Market Analysis Engine • Country: US")
@@ -92,7 +94,7 @@ st.write("Select your industry vertical:")
 
 
 # =====================================================================
-# SECTION 2 : LES 3 CARTES DE TARIFICATION (TOUTES EN VERT ET NOIR)
+# SECTION 2 : LES 3 CARTES DE TARIFICATION COHÉRENTES
 # =====================================================================
 col_card_1, col_card_2, col_card_3 = st.columns(3)
 
