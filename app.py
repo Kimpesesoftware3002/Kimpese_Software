@@ -65,22 +65,20 @@ h3, h4, h5, p, span, label, div {
 
 
 # =====================================================================
-# SECTION 1 : TITRE & ALIGNEMENT VISUEL PARFAIT (LOGO ET METEO CORRIGÉS)
+# SECTION 1 : TITRE, LOGO & MÉTÉO DECALÉS À DROITE + BANDEAU REMONTÉ
 # =====================================================================
 st.markdown("<h3 style='text-align: center; color: #00FF00; margin-bottom: 25px;'>KIMPESE SOFTWARE</h3>", unsafe_allow_html=True)
 
-# Utilisation de 4 colonnes pour centrer l'ensemble et donner plus de place au Logo qu'à la Météo
-col_vide_gauche, col_logo, col_meteo, col_vide_droite = st.columns([1.5, 1.2, 0.9, 1.2])
+# Augmentation de l'espace à gauche (2.1) pour décaler le logo et la météo plus vers la droite
+col_vide_gauche, col_logo, col_meteo, col_vide_droite = st.columns([2.1, 1.2, 0.9, 0.8])
 
 with col_logo:
-    # Utilisation de la fonction native de Streamlit pour forcer l'affichage de l'image locale sans bug de lien
     if os.path.exists("logo.png"):
         st.image("logo.png", width=170)
     else:
         st.markdown("<div style='border: 1px dashed #00FF00; padding: 20px; text-align: center;'>[ Logo Manquant ]</div>", unsafe_allow_html=True)
 
 with col_meteo:
-    # Réduction de la boîte météo et de l'écriture pour qu'elle reste plus petite que votre logo
     st.markdown("""
     <div style='text-align: center; border: 1px solid #00FF00; padding: 8px; background-color: #051a05; border-radius: 5px; width: 130px; margin-top: 15px;'>
         <span style='font-size: 18px; color: #FFFFFF; font-weight: bold;'>☀️ 85°F</span><br>
@@ -89,12 +87,25 @@ with col_meteo:
     """, unsafe_allow_html=True)
 
 st.write("")
+st.write("")
+
+# REMONTÉ ICI : Le rectangle vert défilant officiel directement sous l'en-tête
+st.markdown(
+    """
+    <marquee style='color: #00FF00; font-family: monospace; font-size: 20px; background-color: #051a05; padding: 10px; border: 1px solid #00FF00;'>
+        [SYSTEM]: MAPPING COMPETITOR PRICING OVERSIGHT
+    </marquee>
+    """, 
+    unsafe_allow_html=True
+)
+
+st.write("")
 st.markdown("#### 🟢 Market Analysis Engine • Country: US")
 st.write("Select your industry vertical:")
 
 
 # =====================================================================
-# SECTION 2 : LES 3 CARTES DE TARIFICATION COHÉRENTES
+# SECTION 2 : LES 3 CARTES DE TARIFICATION
 # =====================================================================
 col_card_1, col_card_2, col_card_3 = st.columns(3)
 
@@ -133,7 +144,7 @@ with col_card_3:
 
 
 # =====================================================================
-# SECTION 3 : ZONE PUBLIQUE & RECTANGLE VERT DÉFILANT
+# SECTION 3 : ZONE PUBLIQUE DE SOUFFRANCE DES EMAILS
 # =====================================================================
 st.write("---")
 st.write("Enter your business email to request priority access credentials:")
@@ -151,18 +162,6 @@ if submit_button:
         st.rerun()
     else:
         st.error("❌ Please enter a valid business email address (e.g., name@company.com).")
-
-st.write("")
-
-# Le rectangle vert défilant officiel
-st.markdown(
-    """
-    <marquee style='color: #00FF00; font-family: monospace; font-size: 20px; background-color: #051a05; padding: 10px; border: 1px solid #00FF00;'>
-        [SYSTEM]: MAPPING COMPETITOR PRICING OVERSIGHT
-    </marquee>
-    """, 
-    unsafe_allow_html=True
-)
 
 
 # =====================================================================
