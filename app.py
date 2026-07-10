@@ -30,61 +30,41 @@ def lire_emails_csv():
 
 
 # =====================================================================
-# INJECTION CSS POUR LE DESIGN VERT ET NOIR ET EFFACER LE MOT "VISIBILITÉ"
+# INJECTION CSS SÉCURISÉE (SANS CASSER LES BOUTONS NI LES TEXTES)
 # =====================================================================
 st.markdown("""
 <style>
-/* Forçage absolu du fond noir */
+/* Fond noir profond universel */
 .stApp, div[data-testid="stAppViewContainer"], div[data-testid="stHeader"] {
     background-color: #000000 !important;
-    color: #00FF00 !important;
 }
-/* Style vert rétro pour les entrées de texte */
-input, div[data-baseweb="input"] {
-    background-color: #000000 !important;
-    color: #00FF00 !important;
-    border: 1px solid #00FF00 !important;
-}
-input[type="text"], input[type="password"] {
-    color: #00FF00 !important;
-    -webkit-text-fill-color: #00FF00 !important;
-}
-/* Supprime définitivement les textes d'icônes natifs comme 'visible' ou 'hidden' */
-div[data-testid="InputWithDynamicNotification"] span, button div {
-    display: none !important;
-}
-/* Style des boutons en vert terminal */
-button, .stButton>button {
-    background-color: #051a05 !important;
-    color: #00FF00 !important;
-    border: 1px solid #00FF00 !important;
-}
-/* Forçage de la police monospace verte */
+/* Style vert rétro pour les textes de l'interface */
 h3, h4, h5, p, span, label, div {
     color: #00FF00 !important;
     font-family: 'Courier New', Courier, monospace !important;
+}
+/* Bordures vertes propres pour les champs de saisie */
+input {
+    border: 1px solid #00FF00 !important;
+    background-color: #000000 !important;
 }
 </style>
 """, unsafe_allow_html=True)
 
 
 # =====================================================================
-# SECTION 1 : TITRE PRINCIPAL
+# SECTION 1 : EN-TÊTE CORRIGÉ (LOGO ET MÉTÉO ALIGNÉS À GAUCHE)
 # =====================================================================
 st.markdown("<h3 style='text-align: center; color: #00FF00; margin-bottom: 25px;'>KIMPESE SOFTWARE</h3>", unsafe_allow_html=True)
 
-
-# =====================================================================
-# SECTION 2 : LOGO & MÉTÉO (ALIGNÉS ET PARFAITEMENT CENTRÉS)
-# =====================================================================
-# Augmentation millimétrée de la colonne de gauche (de 2.25 à 2.32) pour centrer totalement
-col_vide_gauche, col_logo, col_meteo, col_vide_droite = st.columns([2.32, 1.2, 0.9, 0.58])
+# Alignement stabilisé : 1.5 de vide à gauche pour ramener vers la gauche
+col_vide_gauche, col_logo, col_meteo, col_vide_droite = st.columns([1.5, 1.2, 0.9, 1.4])
 
 with col_logo:
     if os.path.exists("logo.png"):
         st.image("logo.png", width=170)
     else:
-        st.markdown("<div style='border: 1px dashed #00FF00; padding: 20px; text-align: center;'>[ Logo Manquant ]</div>", unsafe_allow_html=True)
+        st.markdown("<div style='border: 1px dashed #00FF00; padding: 20px; text-align: center;'>[ Logo Ready ]</div>", unsafe_allow_html=True)
 
 with col_meteo:
     st.markdown("""
@@ -96,7 +76,7 @@ with col_meteo:
 
 
 # =====================================================================
-# SECTION 3 : BANDEAU DÉFILANT FLUIDE (SANS CADRE LOURD)
+# SECTION 2 : BANDEAU DÉFILANT FLUIDE (SANS CADRE LOURD)
 # =====================================================================
 st.write("")
 st.markdown(
@@ -111,14 +91,14 @@ st.write("")
 
 
 # =====================================================================
-# SECTION 4 : TEXTES D'INTRODUCTION
+# SECTION 3 : LE CHOIX TARIFAIRE ET INFOS
 # =====================================================================
 st.markdown("#### 🟢 Market Analysis Engine • Country: US")
 st.write("Select your industry vertical:")
 
 
 # =====================================================================
-# SECTION 5 : LES 3 CARTES DE TARIFICATION (CÔTE À CÔTE)
+# SECTION 4 : LES 3 CARTES DE TARIFICATION
 # =====================================================================
 col_card_1, col_card_2, col_card_3 = st.columns(3)
 
@@ -131,7 +111,7 @@ with col_card_1:
     """, unsafe_allow_html=True)
     st.write("")
     if st.button("Launch Starter", key="btn_starter"):
-        st.info("Starter Plan selected.")
+        st.session_state.choix_plan = "Starter"
 
 with col_card_2:
     st.markdown("""
@@ -142,7 +122,7 @@ with col_card_2:
     """, unsafe_allow_html=True)
     st.write("")
     if st.button("Launch Pro Trial", key="btn_pro"):
-        st.info("Pro Trial Plan selected.")
+        st.session_state.choix_plan = "Pro"
 
 with col_card_3:
     st.markdown("""
@@ -153,11 +133,15 @@ with col_card_3:
     """, unsafe_allow_html=True)
     st.write("")
     if st.button("Contact Sales", key="btn_ent"):
-        st.info("Enterprise Contact Request logged.")
+        st.session_state.choix_plan = "Enterprise"
+
+# Maintien de l'affichage du choix utilisateur
+if "choix_plan" in st.session_state and st.session_state.choix_plan:
+    st.info(f"Selected Option: {st.session_state.choix_plan} Plan Active.")
 
 
 # =====================================================================
-# SECTION 6 : CAPTURE DES EMAILS
+# SECTION 5 : CAPTURE DES EMAILS
 # =====================================================================
 st.write("---")
 st.write("Enter your business email to request priority access credentials:")
@@ -178,7 +162,7 @@ if submit_button:
 
 
 # =====================================================================
-# SECTION 7 : PANNEAU ADMINISTRATEUR SÉCURISÉ (TOUT EN BAS)
+# SECTION 6 : PANNEAU ADMINISTRATEUR SÉCURISÉ (TOUT EN BAS)
 # =====================================================================
 st.write("---")
 st.markdown("### 🔒 Administration Panel")
@@ -205,7 +189,7 @@ elif mot_de_passe != "":
 
 
 # =====================================================================
-# SECTION 8 : COPYRIGHT
+# SECTION 7 : COPYRIGHT
 # =====================================================================
 st.write("") 
 st.write("---")
