@@ -8,7 +8,7 @@ import os
 import pandas as pd
 from datetime import datetime
 
-# 1. CONFIGURATION GLOBALE D'ORIGINE (Layout large pour éviter le désordre)
+# 1. CONFIGURATION GLOBALE D'ORIGINE
 st.set_page_config(page_title="Kimpese Software | Global Pricing Intelligence", page_icon="🟢", layout="wide")
 
 # Initialisation des variables d'état en mémoire vive
@@ -78,21 +78,21 @@ h3, h4, h5, p, span, label {
 
 
 # =====================================================================
-# SECTION 1 : EN-TÊTE RECADRÉ (LOGO ET MÉTÉO PARFAITEMENT ALIGNÉS)
+# SECTION 1 : EN-TÊTE CORRIGÉ (LOGO DÉCALÉ À DROITE + MÉTÉO ALIGNÉE)
 # =====================================================================
 st.markdown("<h3 style='text-align: center; color: #00FF00;'>KIMPESE SOFTWARE</h3>", unsafe_allow_html=True)
 
-# Utilisation de colonnes équilibrées pour forcer l'alignement horizontal
-col_header_left, col_header_right = st.columns([1, 1])
+# Création de 3 colonnes pour décaler les éléments vers le centre-droit
+col_vide, col_logo, col_meteo = st.columns([1, 2, 2])
 
-with col_header_left:
+with col_logo:
     if os.path.exists("logo.png"):
         st.image("logo.png", width=180)
     else:
         st.markdown("<div style='padding: 10px; color: #00FF00;'>[ Logo Ready ]</div>", unsafe_allow_html=True)
 
-with col_header_right:
-    # Centrage vertical approximatif à l'aide de marges HTML
+with col_meteo:
+    # Ajustement de la marge supérieure pour aligner parfaitement avec le logo
     st.markdown("""
     <div style='border: 1px solid #00FF00; padding: 15px; background-color: #051a05; border-radius: 5px; width: 180px; text-align: center; margin-top: 15px;'>
         <span style='font-size: 25px; color: #FFFFFF; font-weight: bold;'>☀️ 85°F</span><br>
@@ -106,7 +106,7 @@ st.write("Select your industry vertical:")
 
 
 # =====================================================================
-# SECTION 2 : CARTES DE TARIFS CORRIGÉES (ALIGNÉES CÔTE À CÔTE)
+# SECTION 2 : CARTES DE TARIFS
 # =====================================================================
 col_card_left, col_card_right = st.columns(2)
 
@@ -117,7 +117,7 @@ with col_card_left:
         <p style='font-size: 14px; color: #9CA3AF; margin-top: 10px;'>Track 500 active products<br>Instant stock & price alerts<br>Multi-country tracking</p>
     </div>
     """, unsafe_allow_html=True)
-    st.write("") # Espace
+    st.write("")
     if st.button("Launch Pro Trial", key="btn_pro_trial"):
         st.session_state.choix_plan = "Pro"
 
@@ -128,7 +128,7 @@ with col_card_right:
         <p style='font-size: 14px; color: #9CA3AF; margin-top: 10px;'>Unlimited products & stores<br>Custom API access<br>Dedicated Account Manager</p>
     </div>
     """, unsafe_allow_html=True)
-    st.write("") # Espace
+    st.write("")
     if st.button("Contact Sales", key="btn_contact_sales"):
         st.session_state.choix_plan = "Enterprise"
 
@@ -155,7 +155,7 @@ if submit_button:
 
 st.write("")
 
-# Le rectangle vert défilant officiel repositionné proprement
+# Le rectangle vert défilant
 st.markdown(
     """
     <marquee style='color: #00FF00; font-family: monospace; font-size: 20px; background-color: #051a05; padding: 10px; border: 1px solid #00FF00;'>
