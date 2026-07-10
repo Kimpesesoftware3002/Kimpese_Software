@@ -30,28 +30,11 @@ def lire_emails_csv():
 
 
 # =====================================================================
-# BLOC DE FORÇAGE : VRAI FOND NOIR TOTAL ET MONOSPACE VERT
-# =====================================================================
-st.markdown("""
-<style>
-/* Écrase le gris par un fond noir absolu (#000000) sur toute la page */
-.stApp, div[data-testid="stAppViewContainer"], div[data-testid="stHeader"] {
-    background-color: #000000 !important;
-}
-/* Aligne le style de police de votre terminal de droite */
-p, span, label, div {
-    font-family: 'Courier New', Courier, monospace !important;
-}
-</style>
-""", unsafe_allow_html=True)
-
-
-# =====================================================================
 # SECTION 1 : LOGO & DESIGN PRÉCÉDENT + BANDEAU VERT
 # =====================================================================
 st.markdown("<h3 style='text-align: center; color: #00FF00;'>KIMPESE SOFTWARE</h3>", unsafe_allow_html=True)
 
-# Colonnes ajustées pour centrer visuellement le logo et la météo
+# Colonnes ajustées pour caler au pixel près votre logo et la météo
 col_vide_gauche, col_logo, col_meteo, col_vide_droite = st.columns([1.7, 1.2, 0.9, 1.2])
 
 with col_logo:
@@ -144,7 +127,7 @@ if submit_button:
 
 
 # =====================================================================
-# SECTION 4 : ESPACE ADMINISTRATEUR SÉCURISÉ (Le fichier CSV)
+# SECTION 4 : ESPACE ADMINISTRATEUR SÉCURISÉ
 # =====================================================================
 st.write("---")
 st.markdown("### 🔒 Administration Panel")
