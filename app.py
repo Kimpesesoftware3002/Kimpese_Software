@@ -30,24 +30,39 @@ def lire_emails_csv():
 
 
 # =====================================================================
-# SECTION 1 : LOGO & DESIGN PRÉCÉDENT + BANDEAU VERT
+# FORÇAGE ABSOLU ET DÉFINITIF DU FOND NOIR TOTAL (#000000)
+# =====================================================================
+st.markdown("""
+<style>
+/* Supprime le gris et verrouille le noir pur partout */
+.stApp, div[data-testid="stAppViewContainer"], div[data-testid="stHeader"], div[data-testid="stMainViewContainer"] {
+    background-color: #000000 !important;
+}
+/* Force la police style terminal de votre console */
+p, span, label, div {
+    font-family: 'Courier New', Courier, monospace !important;
+}
+</style>
+""", unsafe_allow_html=True)
+
+
+# =====================================================================
+# SECTION 1 : LOGO & DESIGN CENTRÉS ET DÉCALÉS À DROITE EN HTML
 # =====================================================================
 st.markdown("<h3 style='text-align: center; color: #00FF00;'>KIMPESE SOFTWARE</h3>", unsafe_allow_html=True)
 
-# Colonnes ajustées pour caler au pixel près votre logo et la météo
-col_vide_gauche, col_logo, col_meteo, col_vide_droite = st.columns([1.7, 1.2, 0.9, 1.2])
-
-with col_logo:
-    if os.path.exists("logo.png"):
-        st.image("logo.png", width=150)
-
-with col_meteo:
-    st.markdown("""
-    <div style='text-align: center; border: 1px solid #00FF00; padding: 10px; background-color: #051a05; border-radius: 5px; width: 160px; margin-top: 10px;'>
-        <span style='font-size: 22px; color: #FFFFFF;'>☀️ 85°F</span><br>
+# Utilisation d'un bloc HTML unique avec une marge à gauche (margin-left: 38%) pour pousser le logo et la météo vers la droite
+st.markdown("""
+<div style='display: flex; align-items: center; gap: 30px; margin-left: 38%; margin-bottom: 20px;'>
+    <div>
+        <img src='https://githubusercontent.com' width='150'>
+    </div>
+    <div style='text-align: center; border: 1px solid #00FF00; padding: 10px; background-color: #051a05; border-radius: 5px; width: 160px;'>
+        <span style='font-size: 22px; color: #FFFFFF; font-weight: bold;'>☀️ 85°F</span><br>
         <span style='color: #00FF00; font-size: 11px;'>● Live Weather</span>
     </div>
-    """, unsafe_allow_html=True)
+</div>
+""", unsafe_allow_html=True)
 
 st.write("")
 
