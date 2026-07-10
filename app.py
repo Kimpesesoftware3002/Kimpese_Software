@@ -30,7 +30,7 @@ def lire_emails_csv():
 
 
 # =====================================================================
-# INJECTION CSS POUR LE DESIGN VERT ET NOIR
+# INJECTION CSS POUR LE DESIGN VERT ET NOIR ET EFFACER LE MOT "VISIBILITÉ"
 # =====================================================================
 st.markdown("""
 <style>
@@ -49,6 +49,10 @@ input[type="text"], input[type="password"] {
     color: #00FF00 !important;
     -webkit-text-fill-color: #00FF00 !important;
 }
+/* Supprime définitivement les textes d'icônes natifs comme 'visible' ou 'hidden' */
+div[data-testid="InputWithDynamicNotification"] span, button div {
+    display: none !important;
+}
 /* Style des boutons en vert terminal */
 button, .stButton>button {
     background-color: #051a05 !important;
@@ -65,12 +69,16 @@ h3, h4, h5, p, span, label, div {
 
 
 # =====================================================================
-# SECTION 1 : TITRE, LOGO & MÉTÉO DECALÉS À DROITE + BANDEAU REMONTÉ
+# SECTION 1 : TITRE PRINCIPAL
 # =====================================================================
 st.markdown("<h3 style='text-align: center; color: #00FF00; margin-bottom: 25px;'>KIMPESE SOFTWARE</h3>", unsafe_allow_html=True)
 
-# Augmentation de l'espace à gauche (2.1) pour décaler le logo et la météo plus vers la droite
-col_vide_gauche, col_logo, col_meteo, col_vide_droite = st.columns([2.1, 1.2, 0.9, 0.8])
+
+# =====================================================================
+# SECTION 2 : LOGO & MÉTÉO (ALIGNÉS ET PARFAITEMENT CENTRÉS)
+# =====================================================================
+# Augmentation millimétrée de la colonne de gauche (de 2.25 à 2.32) pour centrer totalement
+col_vide_gauche, col_logo, col_meteo, col_vide_droite = st.columns([2.32, 1.2, 0.9, 0.58])
 
 with col_logo:
     if os.path.exists("logo.png"):
@@ -86,26 +94,31 @@ with col_meteo:
     </div>
     """, unsafe_allow_html=True)
 
-st.write("")
-st.write("")
 
-# REMONTÉ ICI : Le rectangle vert défilant officiel directement sous l'en-tête
+# =====================================================================
+# SECTION 3 : BANDEAU DÉFILANT FLUIDE (SANS CADRE LOURD)
+# =====================================================================
+st.write("")
 st.markdown(
     """
-    <marquee style='color: #00FF00; font-family: monospace; font-size: 20px; background-color: #051a05; padding: 10px; border: 1px solid #00FF00;'>
+    <marquee style='color: #00FF00; font-family: monospace; font-size: 20px; background: transparent; padding: 5px;'>
         [SYSTEM]: MAPPING COMPETITOR PRICING OVERSIGHT
     </marquee>
     """, 
     unsafe_allow_html=True
 )
-
 st.write("")
+
+
+# =====================================================================
+# SECTION 4 : TEXTES D'INTRODUCTION
+# =====================================================================
 st.markdown("#### 🟢 Market Analysis Engine • Country: US")
 st.write("Select your industry vertical:")
 
 
 # =====================================================================
-# SECTION 2 : LES 3 CARTES DE TARIFICATION
+# SECTION 5 : LES 3 CARTES DE TARIFICATION (CÔTE À CÔTE)
 # =====================================================================
 col_card_1, col_card_2, col_card_3 = st.columns(3)
 
@@ -144,7 +157,7 @@ with col_card_3:
 
 
 # =====================================================================
-# SECTION 3 : ZONE PUBLIQUE DE SOUFFRANCE DES EMAILS
+# SECTION 6 : CAPTURE DES EMAILS
 # =====================================================================
 st.write("---")
 st.write("Enter your business email to request priority access credentials:")
@@ -165,7 +178,7 @@ if submit_button:
 
 
 # =====================================================================
-# SECTION 4 : ESPACE ADMINISTRATEUR SÉCURISÉ
+# SECTION 7 : PANNEAU ADMINISTRATEUR SÉCURISÉ (TOUT EN BAS)
 # =====================================================================
 st.write("---")
 st.markdown("### 🔒 Administration Panel")
@@ -192,7 +205,7 @@ elif mot_de_passe != "":
 
 
 # =====================================================================
-# SECTION 5 : MENTION DE COPYRIGHT
+# SECTION 8 : COPYRIGHT
 # =====================================================================
 st.write("") 
 st.write("---")
