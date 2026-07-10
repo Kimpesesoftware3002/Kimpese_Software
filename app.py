@@ -4,7 +4,7 @@ import os
 import pandas as pd
 from datetime import datetime
 
-# 1. CONFIGURATION GLOBALE D'ORIGINE
+# Configuration globale de la page Streamlit
 st.set_page_config(page_title="Kimpese Software", page_icon="💻", layout="wide")
 
 # Nom du fichier de stockage permanent
@@ -33,54 +33,36 @@ def lire_emails_csv():
 
 
 # =====================================================================
-# AJOUT : INJECTION DU STYLE POUR LE FOND NOIR RETRO HACKER
-# =====================================================================
-st.markdown("""
-<style>
-/* Applique le fond noir complet sur l'application */
-.stApp {
-    background-color: #0A0F17 !important;
-    color: #F3F4F6 !important;
-}
-/* Force les zones de saisie à rester sombres avec bordure verte */
-input, div[data-baseweb="input"], select, div[data-baseweb="select"] {
-    background-color: #000000 !important;
-    color: #00FF00 !important;
-    border: 1px solid #00FF00 !important;
-}
-input[type="text"], input[type="password"] {
-    color: #00FF00 !important;
-    -webkit-text-fill-color: #00FF00 !important;
-}
-/* Aligne le style rétro des boutons */
-button, .stButton>button {
-    background-color: #051a05 !important;
-    color: #00FF00 !important;
-    border: 1px solid #00FF00 !important;
-}
-</style>
-""", unsafe_allow_html=True)
-
-
-# =====================================================================
-# SECTION 1 : LOGO & DESIGN D'ORIGINE (TITRE CENTRÉ ET LOGO REPOUSSÉ)
+# SECTION 1 : LOGO & DESIGN INITIAL + BANDEAU VERT DEPLACÉ ICI
 # =====================================================================
 st.markdown("<h3 style='text-align: center; color: #00FF00;'>KIMPESE SOFTWARE</h3>", unsafe_allow_html=True)
 
-# Utilisation de proportions personnalisées (ex:) pour pousser vers la droite
-col_pousse_gauche, col_img, col_wt, col_pousse_droite = st.columns([2, 1.2, 1.2, 1])
+# Colonnes ajustées (1.7 à gauche) pour pousser très légèrement le logo vers la droite
+col_vide_gauche, col_logo, col_meteo, col_vide_droite = st.columns([1.7, 1.2, 0.9, 1.2])
 
-with col_img:
+with col_logo:
     if os.path.exists("logo.png"):
         st.image("logo.png", width=150)
 
-with col_wt:
+with col_meteo:
     st.markdown("""
-    <div style='text-align: center; border: 1px solid #00FF00; padding: 10px; background-color: #051a05; border-radius: 5px; width: 150px; margin-top: 10px;'>
-        <span style='font-size: 22px; color: #FFFFFF; font-weight: bold;'>☀️ 85°F</span><br>
+    <div style='text-align: center; border: 1px solid #00FF00; padding: 10px; background-color: #051a05; border-radius: 5px; width: 160px; margin-top: 10px;'>
+        <span style='font-size: 22px; color: #FFFFFF;'>☀️ 85°F</span><br>
         <span style='color: #00FF00; font-size: 11px;'>● Live Weather</span>
     </div>
     """, unsafe_allow_html=True)
+
+st.write("")
+
+# DEPLACÉ ICI : Le bandeau vert défilant passe officiellement en Section 1, sous le logo
+st.markdown(
+    """
+    <marquee style='color: #00FF00; font-family: monospace; font-size: 20px; background-color: #051a05; padding: 10px; border: 1px solid #00FF00;'>
+        [SYSTEM]: MAPPING COMPETITOR PRICING OVERSIGHT
+    </marquee>
+    """, 
+    unsafe_allow_html=True
+)
 
 st.write("")
 st.markdown("#### 🟢 Market Analysis Engine • Country: US")
@@ -88,7 +70,7 @@ st.write("Select your industry vertical:")
 
 
 # =====================================================================
-# SECTION 2 : LES 3 CARTES DE TARIFICATION ALIGNÉES CÔTE À CÔTE
+# SECTION 2 : LES 3 CARTES DE TARIFICATION (ALIGNÉES CÔTE À CÔTE)
 # =====================================================================
 col_card_1, col_card_2, col_card_3 = st.columns(3)
 
@@ -101,7 +83,7 @@ with col_card_1:
     """, unsafe_allow_html=True)
     st.write("")
     if st.button("Launch Starter", key="btn_starter"):
-        st.info("Starter Plan selected.")
+        st.session_state.choix_plan = "Starter"
 
 with col_card_2:
     st.markdown("""
@@ -112,7 +94,7 @@ with col_card_2:
     """, unsafe_allow_html=True)
     st.write("")
     if st.button("Launch Pro Trial", key="btn_pro"):
-        st.info("Pro Trial Plan selected.")
+        st.session_state.choix_plan = "Pro"
 
 with col_card_3:
     st.markdown("""
@@ -123,7 +105,7 @@ with col_card_3:
     """, unsafe_allow_html=True)
     st.write("")
     if st.button("Contact Sales", key="btn_ent"):
-        st.info("Enterprise Contact Request logged.")
+        st.session_state.choix_plan = "Enterprise"
 
 
 # =====================================================================
@@ -139,24 +121,16 @@ with st.form(key="email_form", clear_on_submit=True):
 if submit_button:
     if email_saisi.strip() == "":
         st.error("❌ Le champ ne peut pas être vide.")
+    
+    # Validation du format de l'e-mail
     elif re.match(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", email_saisi):
-        enregistrer_email_csv(email_saisi.strip())
+        
+        # STOCKAGE DIRECT ET PERMANENT DANS LE FICHIER CSV
+        enregistrer_email_csv(email_saisi)
         st.success("✅ Request saved! Our deployment team will email your secure credentials within 24 hours.")
         st.rerun()
     else:
         st.error("❌ Please enter a valid business email address (e.g., name@company.com).")
-
-st.write("")
-
-# Le bandeau vert défilant officiel
-st.markdown(
-    """
-    <marquee style='color: #00FF00; font-family: monospace; font-size: 20px; background-color: #051a05; padding: 10px; border: 1px solid #00FF00;'>
-        [SYSTEM]: MAPPING COMPETITOR PRICING OVERSIGHT
-    </marquee>
-    """, 
-    unsafe_allow_html=True
-)
 
 
 # =====================================================================
