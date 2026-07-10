@@ -34,7 +34,7 @@ def lire_emails_csv():
 # =====================================================================
 # SECTION 1 : LOGO & DESIGN PRÉCÉDENT
 # =====================================================================
-st.markdown("<h3 style='text-align: center;'>KIMPESE SOFTWARE</h3>", unsafe_allow_html=True)
+st.markdown("<h3 style='text-align: center;'>KIMPESE SOFTWARE</h3>", unsafe_allow_html=False)
 
 # =====================================================================
 # SECTION 2 : ZONE PUBLIQUE (Capture, validation et stockage des e-mails)
@@ -44,7 +44,7 @@ st.write("**Enter your business email to request priority access credentials:**"
 
 with st.form(key="email_form", clear_on_submit=True):
     email_saisi = st.text_input("Business Email :", placeholder="name@company.com")
-    submit_button = st.form_submit_button(label="Submit Request")
+    submit_button = st.form_submit_with_button(label="Submit Request")
 
 if submit_button:
     if email_saisi.strip() == "":
