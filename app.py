@@ -1,122 +1,108 @@
-# PROPRIETARY NOTICE & COPYRIGHT LICENSE
-# Copyright © 2026 KIMPESE SOFTWARE L.L.C. All rights reserved.
-# State of Registration: Wyoming, USA. Secured under Wyoming, USA LLC Proprietary
-# ---------------------------------------------------------------------
 import streamlit as st
+import re
 import os
 import pandas as pd
+from datetime import datetime
 
-# Configuration globale de la page
-st.set_page_config(page_title="Kimpese Software | Global Pricing Intelligence", page_icon="🟢", layout="wide")
+# Configuration de la page Streamlit
+st.set_page_config(page_title="Kimpese Software", page_icon="💻", layout="centered")
 
-# Initialisation de la liste des e-mails en mémoire vive
-if "liste_emails" not in st.session_state:
-    st.session_state.liste_emails = []
+# Nom du fichier de stockage permanent
+FICHIER_CSV = "prospects.csv"
 
-# --- DESIGN SILICON VALLEY NOIR ET VERT ---
-st.markdown("""
-<style>
-/* Fond noir profond universel */
-.stApp {
-    background-color: #0A0F17 !important;
-    color: #F3F4F6 !important;
-    font-family: 'Courier New', Courier, monospace;
-}
-/* Style pour les inputs et formulaires */
-input, div[data-baseweb="input"] {
-    background-color: #000000 !important;
-    color: #00FF00 !important;
-    border: 1px solid #00FF00 !important;
-}
-input[type="text"], input[type="password"] {
-    color: #00FF00 !important;
-    -webkit-text-fill-color: #00FF00 !important;
-}
-button, .stButton>button {
-    background-color: #051a05 !important;
-    color: #00FF00 !important;
-    border: 1px solid #00FF00 !important;
-}
-</style>
-""", unsafe_allow_html=True)
+# Fonction pour initialiser le fichier CSV avec des en-têtes s'il n'existe pas
+def initialiser_csv():
+    if not os.path.exists(FICHIER_CSV):
+        df_initial = pd.DataFrame(columns=["Date d'inscription", "Emails Collectés"])
+        df_initial.to_csv(FICHIER_CSV, index=False, encoding="utf-8")
+
+# Fonction pour ajouter un e-mail dans le fichier CSV
+def enregistrer_email_csv(email):
+    initialiser_csv()
+    date_actuelle = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    nouvelle_ligne = pd.DataFrame([[date_actuelle, email]], columns=["Date d'inscription", "Emails Collectés"])
+    nouvelle_ligne.to_csv(FICHIER_CSV, mode='a', header=False, index=False, encoding="utf-8")
+
+# Fonction pour lire les e-mails enregistrés
+def lire_emails_csv():
+    initialiser_csv()
+    try:
+        return pd.read_csv(FICHIER_CSV, encoding="utf-8")
+    except Exception:
+        return pd.DataFrame(columns=["Date d'inscription", "Emails Collectés"])
 
 # =====================================================================
-# SECTION 1 : EN-TÊTE D'ORIGINE (LOGO ET MÉTÉO)
+# SECTION 1 : LOGO & DESIGN PRÉCÉDENT
 # =====================================================================
-st.markdown("<h3 style='text-align: center; color: #00FF00;'>KIMPESE SOFTWARE</h3>", unsafe_allow_html=True)
-
-# Note: Remettez ici votre code d'affichage d'image logo.png et météo si nécessaire
-# ex: st.image("logo.png") ou votre composant météo d'origine
-
-st.markdown("#### 🟢 Market Analysis Engine • Country: US")
-st.write("Select your industry vertical:")
+st.markdown("<h3 style='text-align: center;'>KIMPESE SOFTWARE</h3>", unsafe_allow_html=False)
 
 # =====================================================================
-# SECTION 2 : ZONE D'INSCRIPTION & RECTANGLE VERT DÉFILANT
+# SECTION 2 : ZONE PUBLIQUE (Capture, validation et stockage des e-mails)
 # =====================================================================
 st.write("---")
 st.write("**Enter your business email to request priority access credentials:**")
 
-# Formulaire d'inscription avec bouton d'envoi
 with st.form(key="email_form", clear_on_submit=True):
-    email_saisi = st.text_input("Business Email :", placeholder="ceo@yourbrand.com")
-    submit_button = st.form_submit_button(label="Submit Request")
+    email_saisi = st.text_input("Business Email :", placeholder="name@company.com")
+    submit_button = st.form_submit_with_button(label="Submit Request")
 
 if submit_button:
-    if email_saisi.strip() != "":
-        st.session_state.liste_emails.append(email_saisi.strip())
+    if email_saisi.strip() == "":
+        st.error("❌ Le champ ne peut pas être vide.")
+    
+    # Validation du format de l'e-mail
+    elif re.match(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", email_saisi):
+        
+        # STOCKAGE DIRECT ET PERMANENT DANS LE FICHIER
+        enregistrer_email_csv(email_saisi)
+        
         st.success("✅ Request saved! Our deployment team will email your secure credentials within 24 hours.")
-        st.rerun()
-
-st.write("")
-st.write("")
-
-# Insertion du rectangle vert défilant officiel
-st.markdown(
-    """
-    <marquee style='color: #00FF00; font-family: monospace; font-size: 20px; background-color: #051a05; padding: 10px; border: 1px solid #00FF00;'>
-        [SYSTEM]: MAPPING COMPETITOR PRICING OVERSIGHT
-    </marquee>
-    """, 
-    unsafe_allow_html=True
-)
+    else:
+        st.error("❌ Please enter a valid business email address (e.g., name@company.com).")
 
 # =====================================================================
-# SECTION 3 : PANEL ADMINISTRATEUR DÉPLIABLE SÉCURISÉ TOUT EN BAS
+# SECTION 3 : ESPACE ADMINISTRATEUR SÉCURISÉ (Le fichier CSV)
 # =====================================================================
 st.write("---")
-st.markdown("<h4 style='color: #00FF00;'>🔒 Administration Panel (Admin Only)</h4>", unsafe_allow_html=True)
+st.markdown("### 🔒 Administration Panel")
 
-# Demande du mot de passe admin
 mot_de_passe = st.text_input("Enter Admin Password to view prospects:", type="password")
 
 if mot_de_passe == "KimpeseAdmin2026":
-    with st.expander("📂 Internal Database Viewer", expanded=True):
-        if st.session_state.liste_emails:
-            df_leads = pd.DataFrame(st.session_state.liste_emails, columns=["Emails Collectés"])
-            st.dataframe(df_leads, use_container_width=True)
-            
-            # Option d'export CSV d'origine
-            csv = df_leads.to_csv(index=False).encode('utf-8')
-            st.download_button(
-                label="📥 Download Leads List (CSV)", 
-                data=csv, 
-                file_name="kimpese_leads.csv", 
-                mime="text/csv"
-            )
-        else:
-            st.info("No leads captured in this active session yet.")
+    st.markdown("#### 👥 Captured Prospect Emails")
+    
+    # Lecture en temps réel du fichier CSV
+    df_prospects = lire_emails_csv()
+    
+    if not df_prospects.empty:
+        st.dataframe(df_prospects, use_container_width=True)
+        
+        # Bouton pour télécharger directement le fichier depuis l'interface
+        csv_data = df_prospects.to_csv(index=False, encoding="utf-8")
+        st.download_button(
+            label="📥 Télécharger le fichier CSV",
+            data=csv_data,
+            file_name="liste_prospects_export.csv",
+            mime="text/csv"
+        )
+    else:
+        st.info("Aucun e-mail n'a encore été enregistré dans le fichier.")
+    
 elif mot_de_passe != "":
     st.error("❌ Mot de passe administrateur incorrect.")
+else:
+    st.info("Le tableau des prospects est masqué. Saisissez le mot de passe pour y accéder.")
 
 # =====================================================================
-# SECTION 4 : MENTION DE COPYRIGHT D'ORIGINE
+# SECTION 4 : MENTION DE COPYRIGHT (Tout en bas)
 # =====================================================================
+st.write("") 
+st.write("") 
 st.write("---")
 st.markdown(
     """
-    <div style='text-align: center; color: #4B5563; font-size: 12px; font-family: monospace;'>
-        © 2026 KIMPESE SOFTWARE L.L.C. All rights reserved. Secured under Wyoming, USA LLC Proprietary.
+    <div style='text-align: center; color: #888888; font-size: 14px;'>
+        © 2026 Kimpese Software. All rights reserved.
     </div>
     """, 
     unsafe_allow_html=True
