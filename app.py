@@ -1,7 +1,3 @@
-# PROPRIETARY NOTICE & COPYRIGHT LICENSE
-# Copyright © 2026 KIMPESE SOFTWARE L.L.C. All rights reserved.
-# State of Registration: Wyoming, USA. Secured under Wyoming, USA LLC Proprietary
-# ---------------------------------------------------------------------
 import streamlit as st
 import re
 import os
@@ -9,29 +5,25 @@ import pandas as pd
 from datetime import datetime
 
 # 1. CONFIGURATION GLOBALE D'ORIGINE
-st.set_page_config(page_title="Kimpese Software | Global Pricing Intelligence", page_icon="🟢", layout="wide")
+st.set_page_config(page_title="Kimpese Software", page_icon="💻", layout="wide")
 
-# Initialisation des variables d'état en mémoire vive
-if "liste_emails" not in st.session_state:
-    st.session_state.liste_emails = []
-
-if "choix_plan" not in st.session_state:
-    st.session_state.choix_plan = None
-
-# Nom du fichier de stockage permanent CSV
+# Nom du fichier de stockage permanent
 FICHIER_CSV = "prospects.csv"
 
+# Fonction pour initialiser le fichier CSV avec des en-têtes s'il n'existe pas
 def initialiser_csv():
     if not os.path.exists(FICHIER_CSV):
         df_initial = pd.DataFrame(columns=["Date d'inscription", "Emails Collectés"])
         df_initial.to_csv(FICHIER_CSV, index=False, encoding="utf-8")
 
+# Fonction pour ajouter un e-mail dans le fichier CSV
 def enregistrer_email_csv(email):
     initialiser_csv()
     date_actuelle = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     nouvelle_ligne = pd.DataFrame([[date_actuelle, email]], columns=["Date d'inscription", "Emails Collectés"])
     nouvelle_ligne.to_csv(FICHIER_CSV, mode='a', header=False, index=False, encoding="utf-8")
 
+# Fonction pour lire les e-mails enregistrés
 def lire_emails_csv():
     initialiser_csv()
     try:
@@ -40,113 +32,86 @@ def lire_emails_csv():
         return pd.DataFrame(columns=["Date d'inscription", "Emails Collectés"])
 
 
-# --- LE STYLE DESIGN SILICON VALLEY NOIR ET VERT INITIAL ---
-st.markdown("""
-<style>
-/* Fond noir profond universel */
-.stApp {
-    background-color: #0A0F17 !important;
-    color: #F3F4F6 !important;
-    font-family: 'Courier New', Courier, monospace;
-}
-/* Style pour les inputs et formulaires */
-input, div[data-baseweb="input"], select, div[data-baseweb="select"] {
-    background-color: #000000 !important;
-    color: #00FF00 !important;
-    border: 1px solid #00FF00 !important;
-}
-input[type="text"], input[type="password"] {
-    color: #00FF00 !important;
-    -webkit-text-fill-color: #00FF00 !important;
-}
-button, .stButton>button {
-    background-color: #051a05 !important;
-    color: #00FF00 !important;
-    border: 1px solid #00FF00 !important;
-}
-.stAlert {
-    background-color: #111111 !important;
-    color: #00FF00 !important;
-    border: 1px solid #00FF00 !important;
-}
-h3, h4, h5, p, span, label {
-    color: #00FF00 !important;
-    font-family: 'Courier New', Courier, monospace !important;
-}
-</style>
-""", unsafe_allow_html=True)
-
-
 # =====================================================================
-# SECTION 1 : EN-TÊTE CORRIGÉ (LOGO DÉCALÉ À DROITE + MÉTÉO ALIGNÉE)
+# SECTION 1 : LOGO & DESIGN D'ORIGINE (TITRE CENTRÉ)
 # =====================================================================
 st.markdown("<h3 style='text-align: center; color: #00FF00;'>KIMPESE SOFTWARE</h3>", unsafe_allow_html=True)
 
-# Création de 3 colonnes pour décaler les éléments vers le centre-droit
-col_vide, col_logo, col_meteo = st.columns([1, 2, 2])
-
-with col_logo:
-    if os.path.exists("logo.png"):
-        st.image("logo.png", width=180)
-    else:
-        st.markdown("<div style='padding: 10px; color: #00FF00;'>[ Logo Ready ]</div>", unsafe_allow_html=True)
-
-with col_meteo:
-    # Ajustement de la marge supérieure pour aligner parfaitement avec le logo
-    st.markdown("""
-    <div style='border: 1px solid #00FF00; padding: 15px; background-color: #051a05; border-radius: 5px; width: 180px; text-align: center; margin-top: 15px;'>
-        <span style='font-size: 25px; color: #FFFFFF; font-weight: bold;'>☀️ 85°F</span><br>
-        <span style='color: #00FF00; font-size: 12px;'>● Live Weather</span>
-    </div>
-    """, unsafe_allow_html=True)
+# Ligne d'en-tête pour aligner votre logo et le widget météo d'origine
+col_header_1, col_header_2, col_header_3 = st.columns([1, 2, 1])
+with col_header_2:
+    col_img, col_wt = st.columns(2)
+    with col_img:
+        if os.path.exists("logo.png"):
+            st.image("logo.png", width=150)
+    with col_wt:
+        st.markdown("""
+        <div style='text-align: center; border: 1px solid #00FF00; padding: 10px; background-color: #051a05; border-radius: 5px; width: 160px; margin-top: 10px;'>
+            <span style='font-size: 22px; color: #FFFFFF;'>☀️ 85°F</span><br>
+            <span style='color: #00FF00; font-size: 11px;'>● Live Weather</span>
+        </div>
+        """, unsafe_allow_html=True)
 
 st.write("")
-st.markdown("### 🟢 Market Analysis Engine • Country: US")
+st.markdown("#### 🟢 Market Analysis Engine • Country: US")
 st.write("Select your industry vertical:")
 
 
 # =====================================================================
-# SECTION 2 : CARTES DE TARIFS
+# SECTION 2 : LES 3 CARTES DE TARIFICATION ALIGNÉES CÔTE À CÔTE
 # =====================================================================
-col_card_left, col_card_right = st.columns(2)
+col_card_1, col_card_2, col_card_3 = st.columns(3)
 
-with col_card_left:
+with col_card_1:
     st.markdown("""
-    <div style='border: 1px solid #2ECC71; padding: 20px; border-radius: 5px; background-color: #0A0F17; min-height: 160px;'>
-        <div style='color: #2ECC71; font-weight: bold; font-size: 20px;'>⚡ Pro Tracker</div>
-        <p style='font-size: 14px; color: #9CA3AF; margin-top: 10px;'>Track 500 active products<br>Instant stock & price alerts<br>Multi-country tracking</p>
+    <div style='border: 1px solid #00FF00; padding: 15px; border-radius: 5px; background-color: #0A0F17; min-height: 150px;'>
+        <div style='color: #00FF00; font-weight: bold;'>⚡ Starter Tracker</div>
+        <p style='font-size: 13px; color: #9CA3AF; margin-top: 5px;'>Basic monitoring tools<br>Up to 50 items tracked<br>Standard daily updates</p>
     </div>
     """, unsafe_allow_html=True)
     st.write("")
-    if st.button("Launch Pro Trial", key="btn_pro_trial"):
-        st.session_state.choix_plan = "Pro"
+    if st.button("Launch Starter", key="btn_starter"):
+        st.info("Starter Plan selected.")
 
-with col_card_right:
+with col_card_2:
     st.markdown("""
-    <div style='border: 1px solid #9CA3AF; padding: 20px; border-radius: 5px; background-color: #0A0F17; min-height: 160px;'>
-        <div style='color: #FFFFFF; font-weight: bold; font-size: 20px;'>🤝 Enterprise</div>
-        <p style='font-size: 14px; color: #9CA3AF; margin-top: 10px;'>Unlimited products & stores<br>Custom API access<br>Dedicated Account Manager</p>
+    <div style='border: 1px solid #2ECC71; padding: 15px; border-radius: 5px; background-color: #0A0F17; min-height: 150px;'>
+        <div style='color: #2ECC71; font-weight: bold;'>⚡ Pro Tracker</div>
+        <p style='font-size: 13px; color: #9CA3AF; margin-top: 5px;'>Track 500 active products<br>Instant stock & price alerts<br>Multi-country tracking</p>
     </div>
     """, unsafe_allow_html=True)
     st.write("")
-    if st.button("Contact Sales", key="btn_contact_sales"):
-        st.session_state.choix_plan = "Enterprise"
+    if st.button("Launch Pro Trial", key="btn_pro"):
+        st.info("Pro Trial Plan selected.")
+
+with col_card_3:
+    st.markdown("""
+    <div style='border: 1px solid #9CA3AF; padding: 15px; border-radius: 5px; background-color: #0A0F17; min-height: 150px;'>
+        <div style='color: #FFFFFF; font-weight: bold;'>🤝 Enterprise</div>
+        <p style='font-size: 13px; color: #9CA3AF; margin-top: 5px;'>Unlimited products & stores<br>Custom API access<br>Dedicated Account Manager</p>
+    </div>
+    """, unsafe_allow_html=True)
+    st.write("")
+    if st.button("Contact Sales", key="btn_ent"):
+        st.info("Enterprise Contact Request logged.")
 
 
 # =====================================================================
-# SECTION 3 : FORMULAIRE D'INSCRIPTION & RECTANGLE VERT DÉFILANT
+# SECTION 3 : ZONE PUBLIQUE (Capture, validation et stockage des e-mails)
 # =====================================================================
 st.write("---")
-st.write("Enter your business email to request priority access credentials:")
+st.write("**Enter your business email to request priority access credentials:**")
 
 with st.form(key="email_form", clear_on_submit=True):
-    email_saisi = st.text_input("Business Email :", placeholder="ceo@yourbrand.com")
+    email_saisi = st.text_input("Business Email :", placeholder="name@company.com")
+    # CORRIGÉ : Utilisation de st.form_submit_button pour effacer l'erreur rouge définitivement
     submit_button = st.form_submit_button(label="Submit Request")
 
 if submit_button:
     if email_saisi.strip() == "":
         st.error("❌ Le champ ne peut pas être vide.")
     elif re.match(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", email_saisi):
+        # Enregistrement permanent dans le fichier CSV
         enregistrer_email_csv(email_saisi.strip())
         st.success("✅ Request saved! Our deployment team will email your secure credentials within 24 hours.")
         st.rerun()
@@ -155,7 +120,7 @@ if submit_button:
 
 st.write("")
 
-# Le rectangle vert défilant
+# REPOSITIONNÉ : Le bandeau vert défilant officiel
 st.markdown(
     """
     <marquee style='color: #00FF00; font-family: monospace; font-size: 20px; background-color: #051a05; padding: 10px; border: 1px solid #00FF00;'>
@@ -167,41 +132,46 @@ st.markdown(
 
 
 # =====================================================================
-# SECTION 4 : PANEL ADMINISTRATEUR DEPLIABLE TOUT EN BAS
+# SECTION 4 : ESPACE ADMINISTRATEUR SÉCURISÉ (Tout en bas)
 # =====================================================================
 st.write("---")
-st.markdown("<h4 style='color: #00FF00;'>🔒 Administration Panel (Admin Only)</h4>", unsafe_allow_html=True)
+st.markdown("### 🔒 Administration Panel")
 
 mot_de_passe = st.text_input("Enter Admin Password to view prospects:", type="password")
 
 if mot_de_passe == "KimpeseAdmin2026":
-    with st.expander("🔑 Internal Database Viewer (Admin Only)", expanded=True):
-        df_prospects = lire_emails_csv()
+    st.markdown("#### 👥 Captured Prospect Emails")
+    
+    df_prospects = lire_emails_csv()
+    
+    if not df_prospects.empty:
+        st.dataframe(df_prospects, use_container_width=True)
         
-        if not df_prospects.empty:
-            st.dataframe(df_prospects, use_container_width=True)
-            
-            csv_data = df_prospects.to_csv(index=False, encoding="utf-8")
-            st.download_button(
-                label="📥 Download Leads List (CSV)",
-                data=csv_data,
-                file_name="kimpese_leads.csv",
-                mime="text/csv"
-            )
-        else:
-            st.info("Aucun prospect enregistré pour le moment.")
+        csv_data = df_prospects.to_csv(index=False, encoding="utf-8")
+        st.download_button(
+            label="📥 Télécharger le fichier CSV",
+            data=csv_data,
+            file_name="liste_prospects_export.csv",
+            mime="text/csv"
+        )
+    else:
+        st.info("Aucun e-mail n'a encore été enregistré dans le fichier.")
+    
 elif mot_de_passe != "":
     st.error("❌ Mot de passe administrateur incorrect.")
+else:
+    st.info("Le tableau des prospects est masqué. Saisissez le mot de passe pour y accéder.")
 
 
 # =====================================================================
-# SECTION 5 : MENTION DE COPYRIGHT ET LICENCE D'ORIGINE
+# SECTION 5 : MENTION DE COPYRIGHT (Pied de page)
 # =====================================================================
+st.write("") 
 st.write("---")
 st.markdown(
     """
-    <div style='text-align: center; color: #4B5563; font-size: 12px; font-family: monospace;'>
-        © 2026 KIMPESE SOFTWARE L.L.C. All rights reserved. Secured under Wyoming, USA LLC Proprietary.
+    <div style='text-align: center; color: #888888; font-size: 14px;'>
+        © 2026 Kimpese Software. All rights reserved.
     </div>
     """, 
     unsafe_allow_html=True
